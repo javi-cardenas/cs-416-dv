@@ -1,0 +1,289 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* Main Container */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Navigation */
+.scene-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.scene-navigation button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.scene-navigation button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.scene-navigation button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#scene-indicator {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* Scene Styles */
+.scene {
+  display: none;
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.scene.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scene-content h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+  border-bottom: 3px solid #667eea;
+  padding-bottom: 0.5rem;
+}
+
+.scene-content p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* Chart Container */
+.chart-container {
+  min-height: 500px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Controls */
+.controls {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.controls label {
+  font-weight: 600;
+  margin-right: 1rem;
+  color: #333;
+}
+
+.controls select {
+  padding: 0.5rem;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: white;
+  min-width: 200px;
+}
+
+.controls select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Tooltip Styles */
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  border-radius: 8px;
+  pointer-events: none;
+  font-size: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+/* SVG Styles */
+svg {
+  border-radius: 8px;
+}
+
+.axis text {
+  font-size: 12px;
+  fill: #666;
+}
+
+.axis line,
+.axis path {
+  stroke: #ccc;
+  shape-rendering: crispEdges;
+}
+
+/* Bar Chart Styles */
+.bar {
+  transition: fill 0.3s ease;
+}
+
+.bar:hover {
+  fill: #764ba2 !important;
+}
+
+/* Scatter Plot Styles */
+.dot {
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  stroke: #333;
+  stroke-width: 2px;
+  r: 7;
+}
+
+/* Annotation Styles */
+.annotation-group text {
+  font-size: 14px;
+  fill: #333;
+}
+
+.annotation-group .annotation-line {
+  stroke: #667eea;
+  stroke-width: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .scene-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .scene {
+    padding: 1rem;
+  }
+
+  .scene-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .controls {
+    text-align: center;
+  }
+
+  .controls label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Error Message Styling */
+.error-message {
+  background: #fee;
+  border: 1px solid #fcc;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  color: #a00;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.error-message h3 {
+  margin-bottom: 10px;
+  color: #800;
+}
+
+.error-message p {
+  margin-bottom: 10px;
+}
+
+.error-message code {
+  background: #f8f8f8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  color: #333;
+}

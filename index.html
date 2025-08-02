@@ -3,23 +3,74 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Narrative Visualization</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Stack Overflow Dev Survey 2024 Exploration</title>
+    <link rel="stylesheet" href="src/css/style.css" />
   </head>
 
   <body>
+    <header>
+      <h1>Stack Overflow Developer Survey 2024</h1>
+      <p class="subtitle">A Data-Driven Story of Modern Software Development</p>
+    </header>
+
     <main>
-      <h1>Narrative Visualization</h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
-      </p>
+      <!-- Navigation -->
+      <nav class="scene-navigation">
+        <button id="previous" disabled>← Previous</button>
+        <span id="scene-indicator">Scene 1 of 3</span>
+        <button id="next">Next →</button>
+      </nav>
+
+      <!-- Scene 1: Programming Language Popularity -->
+      <section id="scene-1" class="scene active">
+        <div class="scene-content">
+          <h2>Popularity of Programming Languages</h2>
+          <p>
+            Programming languages vary dramatically in their adoption among
+            developers. This visualization shows the percentage of developers
+            who have worked with each language in the past year, revealing clear
+            winners and emerging trends.
+          </p>
+          <div id="language-chart" class="chart-container"></div>
+        </div>
+      </section>
+
+      <!-- Scene 2: Impact on Compensation -->
+      <section id="scene-2" class="scene">
+        <div class="scene-content">
+          <h2>Impact on Compensation</h2>
+          <p>
+            Experience and language choice significantly impact developer
+            compensation. This bubble chart reveals how different programming
+            languages correlate with salary levels and years of professional
+            experience.
+          </p>
+          <div id="compensation-chart" class="chart-container"></div>
+        </div>
+      </section>
+
+      <!-- Scene 3: AI Tool Adoption Interactive Analysis -->
+      <section id="scene-3" class="scene">
+        <div class="scene-content">
+          <h2>AI Tool Adoption in Development</h2>
+          <p>
+            Explore how developers are adopting AI tools in their workflow.
+            Select different AI tools to see adoption patterns across experience
+            levels.
+          </p>
+          <div class="controls">
+            <label for="ai-tool-select">AI Tool:</label>
+            <select id="ai-tool-select">
+              <option value="">Select an AI tool...</option>
+            </select>
+          </div>
+          <div id="ai-adoption-chart" class="chart-container"></div>
+        </div>
+      </section>
     </main>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.0.0/d3-annotation.min.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="src/js/index.js"></script>
   </body>
 </html>
