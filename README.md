@@ -23,6 +23,12 @@ To run the project...
 npx live-server
 ```
 
+**(Optional)** To run Python for EDA...
+
+```sh
+source .venv/bin/activate
+```
+
 ## TODO
 
 make a tree structure for the project folder
