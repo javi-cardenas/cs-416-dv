@@ -1,3 +1,9 @@
+# Mac
+*.DS_Store
+
+# Original Data
+data/original-dataset/stack-overflow-developer-survey-2024/
+
 # Logs
 logs
 *.log
