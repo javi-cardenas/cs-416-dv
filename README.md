@@ -1,6 +1,6 @@
-# Stack Overflow Developer Survey 2024 - Narrative Visualization
+# Narrative Visualization of Modern Software Development
 
-This project, "Stack Overflow Developer Survey 2024 Exploration," is an interactive narrative visualization designed to illustrate key insights from the 2024 Stack Overflow Developer Survey. The visualization is implemented using D3.js and follows the slideshow narrative structure to guide the audience through a focused story about modern software development trends before allowing them to explore the data further.
+This project is an interactive narrative visualization designed to illustrate key insights from the 2024 Stack Overflow Developer Survey. The visualization is implemented using D3.js and follows the slideshow narrative structure to guide the audience through a focused story about modern software development trends before allowing them to explore the data further.
 
 ## Overview
 
