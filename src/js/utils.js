@@ -5,7 +5,7 @@ function createBarChart(containerId, data, options = {}) {
     margin: { top: 20, right: 30, bottom: 100, left: 50 },
     xField: "x",
     yField: "y",
-    color: "steelblue",
+    color: "#89b4fa",
     xAxisLabel: "",
     yAxisLabel: "",
     rotateXLabels: false,
@@ -119,7 +119,7 @@ function createScatterPlot(containerId, data, options = {}) {
     radiusField: null,
     colorField: null,
     radius: 5,
-    color: "steelblue",
+    color: "#89b4fa",
     xAxisLabel: "",
     yAxisLabel: "",
     showTooltip: true,
@@ -168,7 +168,25 @@ function createScatterPlot(containerId, data, options = {}) {
     const colorDomain = Array.from(
       new Set(data.map((d) => d[config.colorField]))
     );
-    colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(colorDomain);
+    // Catppuccin color palette
+    const catppuccinColors = [
+      "#89b4fa", // blue
+      "#cba6f7", // mauve
+      "#f38ba8", // red
+      "#fab387", // peach
+      "#f9e2af", // yellow
+      "#a6e3a1", // green
+      "#94e2d5", // teal
+      "#89dceb", // sky
+      "#b4befe", // lavender
+      "#f5c2e7", // pink
+      "#cdd6f4", // text
+      "#bac2de", // subtext1
+      "#a6adc8", // subtext0
+      "#9399b2", // overlay2
+      "#7f849c", // overlay1
+    ];
+    colorScale = d3.scaleOrdinal(catppuccinColors).domain(colorDomain);
   }
 
   // X-axis
@@ -188,8 +206,8 @@ function createScatterPlot(containerId, data, options = {}) {
       .attr("class", "tooltip")
       .style("position", "absolute")
       .style("padding", "10px")
-      .style("background", "rgba(0, 0, 0, 0.8)")
-      .style("color", "white")
+      .style("background", "rgba(24, 24, 37, 0.95)") // Catppuccin mantle
+      .style("color", "#cdd6f4") // Catppuccin text
       .style("border-radius", "5px")
       .style("pointer-events", "none")
       .style("opacity", 0);
@@ -362,8 +380,8 @@ function createStackedBarChart(containerId, data, options = {}) {
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("padding", "10px")
-    .style("background", "rgba(0, 0, 0, 0.8)")
-    .style("color", "white")
+    .style("background", "rgba(24, 24, 37, 0.95)") // Catppuccin mantle
+    .style("color", "#cdd6f4") // Catppuccin text
     .style("border-radius", "5px")
     .style("pointer-events", "none")
     .style("opacity", 0);

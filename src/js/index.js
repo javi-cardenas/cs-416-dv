@@ -492,22 +492,258 @@ function createLanguageChart(data) {
   });
 }
 
-function createCompensationChart(data) {
+function createCompensationChart(data, filteredData = null) {
   console.log("Creating compensation bubble chart with language labels...");
+  const dataToShow = filteredData || data;
   console.log(
-    `Showing ${data.length} languages from scene 1 with compensation data`
+    `Showing ${dataToShow.length} languages from scene 1 with compensation data`
   );
-  createScatterPlot("#compensation-chart", data, {
+
+  // Initialize filters if not already done
+  if (!window.compensationFilters) {
+    initializeCompensationFilters(data);
+  }
+
+  createScatterPlot("#compensation-chart", dataToShow, {
     xField: "avgExperience",
     yField: "medianCompensation",
     radiusField: "responseCount",
     colorField: "language",
     xAxisLabel: "Average Years of Professional Coding",
     yAxisLabel: "Median Compensation ($)",
-    width: 1000, // Increased width to accommodate more labels
-    height: 600, // Increased height for better spacing
-    margin: { top: 40, right: 200, bottom: 60, left: 80 }, // Increased right margin for more labels
+    width: 700, // Reduced width for sidebar layout
+    height: 500, // Slightly reduced height
+    margin: { top: 40, right: 120, bottom: 60, left: 80 }, // Reduced right margin
   });
+}
+
+// Compensation Filters Functionality
+function initializeCompensationFilters(originalData) {
+  if (window.compensationFilters) return; // Already initialized
+
+  // Store original data and current filtered data
+  window.compensationFilters = {
+    originalData: originalData,
+    currentData: originalData,
+  };
+
+  // Initialize slider values
+  updateSliderDisplay(
+    "responses-slider",
+    "responses-value",
+    (val) => `${parseInt(val).toLocaleString()}`
+  );
+  updateSliderDisplay("experience-min", "experience-min-value", (val) => val);
+  updateSliderDisplay("experience-max", "experience-max-value", (val) => val);
+  updateSliderDisplay(
+    "comp-min",
+    "comp-min-value",
+    (val) => `$${parseInt(val).toLocaleString()}`
+  );
+  updateSliderDisplay(
+    "comp-max",
+    "comp-max-value",
+    (val) => `$${parseInt(val).toLocaleString()}`
+  );
+
+  // Add event listeners for all filters
+  addFilterEventListeners();
+
+  // Initialize dual range highlight
+  updateDualRangeHighlight();
+}
+
+function updateSliderDisplay(sliderId, displayId, formatter) {
+  const slider = document.getElementById(sliderId);
+  const display = document.getElementById(displayId);
+
+  if (slider && display) {
+    display.textContent = formatter(slider.value);
+
+    // Special handling for dual range sliders
+    if (sliderId === "experience-min" || sliderId === "experience-max") {
+      slider.addEventListener("input", () => {
+        handleDualRangeUpdate(sliderId);
+        display.textContent = formatter(slider.value);
+        applyFilters();
+      });
+    } else {
+      slider.addEventListener("input", () => {
+        display.textContent = formatter(slider.value);
+        applyFilters();
+      });
+    }
+  }
+}
+
+function handleDualRangeUpdate(changedSliderId) {
+  const minSlider = document.getElementById("experience-min");
+  const maxSlider = document.getElementById("experience-max");
+  const minDisplay = document.getElementById("experience-min-value");
+  const maxDisplay = document.getElementById("experience-max-value");
+
+  if (!minSlider || !maxSlider || !minDisplay || !maxDisplay) return;
+
+  const minVal = parseFloat(minSlider.value);
+  const maxVal = parseFloat(maxSlider.value);
+
+  // Ensure min doesn't exceed max
+  if (changedSliderId === "experience-min" && minVal > maxVal) {
+    maxSlider.value = minVal;
+    maxDisplay.textContent = minVal;
+  }
+
+  // Ensure max doesn't go below min
+  if (changedSliderId === "experience-max" && maxVal < minVal) {
+    minSlider.value = maxVal;
+    minDisplay.textContent = maxVal;
+  }
+
+  // Update visual range highlight
+  updateDualRangeHighlight();
+}
+
+function updateDualRangeHighlight() {
+  const minSlider = document.getElementById("experience-min");
+  const maxSlider = document.getElementById("experience-max");
+  const container = document.querySelector(".dual-range-container");
+
+  if (!minSlider || !maxSlider || !container) return;
+
+  const min = parseFloat(minSlider.min);
+  const max = parseFloat(minSlider.max);
+  const minVal = parseFloat(minSlider.value);
+  const maxVal = parseFloat(maxSlider.value);
+
+  const leftPercent = ((minVal - min) / (max - min)) * 100;
+  const rightPercent = ((max - maxVal) / (max - min)) * 100;
+
+  container.style.setProperty("--range-left", leftPercent + "%");
+  container.style.setProperty("--range-right", rightPercent + "%");
+
+  // Update the ::after pseudo-element
+  const style = document.createElement("style");
+  style.textContent = `
+    .dual-range-container::after {
+      left: ${leftPercent}% !important;
+      right: ${rightPercent}% !important;
+    }
+  `;
+
+  // Remove any existing dynamic styles for this
+  const existingStyle = document.getElementById("dual-range-style");
+  if (existingStyle) {
+    existingStyle.remove();
+  }
+
+  style.id = "dual-range-style";
+  document.head.appendChild(style);
+}
+
+function addFilterEventListeners() {
+  // Slider event listeners (experience sliders are handled in updateSliderDisplay)
+  ["responses-slider", "comp-min", "comp-max"].forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.addEventListener("input", applyFilters);
+    }
+  });
+
+  // Reset button
+  const resetButton = document.getElementById("reset-filters");
+  if (resetButton) {
+    resetButton.addEventListener("click", resetFilters);
+  }
+}
+
+function applyFilters() {
+  if (!window.compensationFilters) return;
+
+  const originalData = window.compensationFilters.originalData;
+
+  // Get filter values
+  const minResponses = parseInt(
+    document.getElementById("responses-slider")?.value || 0
+  );
+  const minExperience = parseFloat(
+    document.getElementById("experience-min")?.value || 0
+  );
+  const maxExperience = parseFloat(
+    document.getElementById("experience-max")?.value || 15
+  );
+  const minComp = parseInt(document.getElementById("comp-min")?.value || 0);
+  const maxComp = parseInt(
+    document.getElementById("comp-max")?.value || 200000
+  );
+
+  // Filter the data
+  const filteredData = originalData.filter((item) => {
+    // Response count filter
+    if (item.responseCount < minResponses) return false;
+
+    // Experience filter
+    if (
+      item.avgExperience < minExperience ||
+      item.avgExperience > maxExperience
+    )
+      return false;
+
+    // Compensation filter
+    if (item.medianCompensation < minComp || item.medianCompensation > maxComp)
+      return false;
+
+    return true;
+  });
+
+  // Update stored filtered data
+  window.compensationFilters.currentData = filteredData;
+
+  // Recreate the chart with filtered data
+  createCompensationChart(originalData, filteredData);
+}
+
+function resetFilters() {
+  // Reset slider values to defaults
+  const sliders = [
+    { id: "responses-slider", value: 5000 },
+    { id: "experience-min", value: 0 },
+    { id: "experience-max", value: 15 },
+    { id: "comp-min", value: 0 },
+    { id: "comp-max", value: 200000 },
+  ];
+
+  sliders.forEach(({ id, value }) => {
+    const slider = document.getElementById(id);
+    if (slider) {
+      slider.value = value;
+    }
+  });
+
+  // Update displays and apply filters
+  if (window.compensationFilters) {
+    updateSliderDisplay(
+      "responses-slider",
+      "responses-value",
+      (val) => `${parseInt(val).toLocaleString()}`
+    );
+    updateSliderDisplay("experience-min", "experience-min-value", (val) => val);
+    updateSliderDisplay("experience-max", "experience-max-value", (val) => val);
+    updateSliderDisplay(
+      "comp-min",
+      "comp-min-value",
+      (val) => `$${parseInt(val).toLocaleString()}`
+    );
+    updateSliderDisplay(
+      "comp-max",
+      "comp-max-value",
+      (val) => `$${parseInt(val).toLocaleString()}`
+    );
+
+    // Update dual range highlight
+    updateDualRangeHighlight();
+
+    applyFilters();
+  }
 }
 
 // End of chart functions

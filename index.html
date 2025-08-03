@@ -78,15 +78,120 @@
 
       <!-- Scene 2: Impact on Compensation -->
       <section id="scene-2" class="scene">
-        <div class="scene-content">
-          <h2>Impact on Compensation</h2>
-          <p>
-            Experience and language choice significantly impact developer
-            compensation. This bubble chart reveals how different programming
-            languages correlate with salary levels and years of professional
-            experience.
-          </p>
-          <div id="compensation-chart" class="chart-container"></div>
+        <div class="scene-content compensation-layout">
+          <div class="compensation-main">
+            <h2>Impact on Compensation</h2>
+            <div id="compensation-chart" class="chart-container"></div>
+          </div>
+
+          <div class="compensation-sidebar">
+            <div class="filters-panel">
+              <h3>Filters</h3>
+
+              <div class="filter-group">
+                <label>Min. Responses</label>
+                <div class="slider-container">
+                  <input
+                    type="range"
+                    id="responses-slider"
+                    min="0"
+                    max="30000"
+                    value="5000"
+                    step="1000"
+                  />
+                  <div class="slider-value" id="responses-value">5,000</div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <label>Average Years of Professional Coding</label>
+                <div class="dual-range-container">
+                  <input
+                    type="range"
+                    id="experience-min"
+                    min="0"
+                    max="15"
+                    value="0"
+                    step="0.5"
+                    class="dual-range-min"
+                  />
+                  <input
+                    type="range"
+                    id="experience-max"
+                    min="0"
+                    max="15"
+                    value="15"
+                    step="0.5"
+                    class="dual-range-max"
+                  />
+                  <div class="range-values">
+                    <span>Min: <span id="experience-min-value">0</span></span> -
+                    <span>Max: <span id="experience-max-value">15</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <label>Compensation (in $)</label>
+                <div class="range-slider-container">
+                  <input
+                    type="range"
+                    id="comp-min"
+                    min="0"
+                    max="200000"
+                    value="0"
+                    step="5000"
+                  />
+                  <input
+                    type="range"
+                    id="comp-max"
+                    min="0"
+                    max="200000"
+                    value="200000"
+                    step="5000"
+                  />
+                  <div class="range-values">
+                    <span id="comp-min-value">$0</span> -
+                    <span id="comp-max-value">$200,000</span>
+                  </div>
+                </div>
+              </div>
+
+              <button id="reset-filters" class="reset-button">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
+                  />
+                </svg>
+                RESET
+              </button>
+            </div>
+
+            <div class="info-boxes">
+              <div class="info-box high-earners">
+                <h4>High Earners</h4>
+                <p>
+                  While JavaScript and HTML/CSS enjoy high popularity among
+                  developers, niche programming languages such as Clojure and F#
+                  guarantee a higher salary, but also require more professional
+                  experience.
+                </p>
+              </div>
+
+              <div class="info-box entry-level">
+                <h4>Entry Level</h4>
+                <p>
+                  Programming languages such as Scala, Go, Elixir, Ruby, and
+                  Rust are more favorable for career starters.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

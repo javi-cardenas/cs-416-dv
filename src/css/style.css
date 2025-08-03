@@ -15,6 +15,23 @@ body {
   height: 100vh;
 }
 
+/* Global link styling */
+a {
+  color: #89b4fa; /* Catppuccin blue */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #b4befe; /* Catppuccin lavender */
+}
+
+/* Global strong styling */
+strong {
+  color: #cba6f7; /* Catppuccin mauve */
+  font-weight: 600;
+}
+
 .subtitle {
   font-size: 1.2rem;
   opacity: 0.8;
@@ -125,10 +142,7 @@ main {
 
 /* Scene 0 - Project Introduction */
 #scene-0 h1 {
-  background: linear-gradient(135deg, #89b4fa 0%, #cba6f7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #89b4fa; /* Catppuccin blue */
   font-size: 2rem;
   margin-bottom: 0.4rem;
   font-weight: 700;
@@ -179,9 +193,27 @@ main {
   font-size: 0.95rem;
 }
 
+.project-overview a {
+  color: #89b4fa; /* Catppuccin blue */
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.project-overview a:hover {
+  color: #b4befe; /* Catppuccin lavender */
+  border-bottom: 1px solid #89b4fa;
+}
+
+.project-overview strong {
+  color: #cba6f7; /* Catppuccin mauve */
+  font-weight: 600;
+}
+
 .navigation-hint {
-  background: linear-gradient(135deg, #89b4fa 0%, #cba6f7 100%);
-  color: #1e1e2e;
+  background: #313244; /* Catppuccin surface0 */
+  color: #cdd6f4; /* Catppuccin text */
+  border: 1px solid #45475a; /* Catppuccin surface1 */
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1.5rem;
@@ -266,7 +298,7 @@ svg {
 }
 
 .bar:hover {
-  fill: #764ba2 !important;
+  fill: #cba6f7 !important; /* Catppuccin mauve */
 }
 
 /* Scatter Plot Styles */
@@ -354,4 +386,363 @@ svg {
   border-radius: 3px;
   font-family: monospace;
   color: #cdd6f4;
+}
+
+/* Compensation Scene Layout */
+.compensation-layout {
+  display: flex;
+  gap: 2rem;
+  height: calc(100vh - 120px);
+  align-items: stretch;
+}
+
+.compensation-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.compensation-main h2 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.compensation-main .chart-container {
+  flex: 1;
+  min-height: auto;
+  margin-top: 0;
+}
+
+.compensation-sidebar {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  padding-right: 1rem;
+}
+
+/* Filters Panel */
+.filters-panel {
+  background: rgba(49, 50, 68, 0.3); /* Catppuccin surface0 with transparency */
+  border: 1px solid #45475a; /* Catppuccin surface1 */
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.filters-panel h3 {
+  margin: 0 0 1.5rem 0;
+  color: #cdd6f4; /* Catppuccin text */
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.filter-group {
+  margin-bottom: 2rem;
+}
+
+.filter-group:last-child {
+  margin-bottom: 1.5rem;
+}
+
+.filter-group > label {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: #cdd6f4; /* Catppuccin text */
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Slider Styles */
+.slider-container,
+.range-slider-container {
+  position: relative;
+}
+
+.slider-container input[type="range"],
+.range-slider-container input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #45475a; /* Catppuccin surface1 */
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-bottom: 0.5rem;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb,
+.range-slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #89b4fa; /* Catppuccin blue */
+  cursor: pointer;
+  border: 2px solid #1e1e2e; /* Catppuccin base */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slider-container input[type="range"]::-moz-range-thumb,
+.range-slider-container input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #89b4fa; /* Catppuccin blue */
+  cursor: pointer;
+  border: 2px solid #1e1e2e; /* Catppuccin base */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Dual Range Slider Styles */
+.dual-range-container {
+  position: relative;
+  margin-bottom: 0.5rem;
+  height: 24px;
+}
+
+.dual-range-container input[type="range"] {
+  position: absolute;
+  width: 100%;
+  height: 20px; /* Increase hit area for better clickability */
+  border-radius: 3px;
+  background: transparent;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto; /* Enable pointer events on the entire input */
+  margin: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.dual-range-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #89b4fa; /* Catppuccin blue - same as other sliders */
+  cursor: pointer;
+  border: 2px solid #1e1e2e; /* Catppuccin base */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dual-range-container input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(137, 180, 250, 0.4);
+}
+
+.dual-range-container input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #89b4fa; /* Catppuccin blue - same as other sliders */
+  cursor: pointer;
+  border: 2px solid #1e1e2e; /* Catppuccin base */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dual-range-container input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(137, 180, 250, 0.4);
+}
+
+.dual-range-container .dual-range-min {
+  z-index: 10;
+}
+
+.dual-range-container .dual-range-max {
+  z-index: 11;
+}
+
+/* Track styling for dual range */
+.dual-range-container::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #45475a; /* Catppuccin surface1 */
+  border-radius: 3px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Active range highlight (will be updated by JavaScript) */
+.dual-range-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  background: #89b4fa; /* Catppuccin blue */
+  border-radius: 3px;
+  z-index: 2;
+  left: 0%;
+  right: 0%;
+  transition: all 0.1s ease;
+  pointer-events: none;
+}
+
+.slider-value,
+.range-values {
+  color: #a6adc8; /* Catppuccin subtext0 */
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+.range-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.2rem;
+}
+
+/* Checkbox Styles */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  accent-color: #89b4fa; /* Catppuccin blue */
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.checkbox-label span {
+  color: #cdd6f4; /* Catppuccin text */
+  flex: 1;
+}
+
+.checkbox-label:hover span {
+  color: #b4befe; /* Catppuccin lavender */
+}
+
+/* Reset Button */
+.reset-button {
+  width: 100%;
+  background: rgba(116, 199, 236, 0.15); /* Catppuccin sky with transparency */
+  color: #74c7ec; /* Catppuccin sky */
+  border: 1px solid rgba(116, 199, 236, 0.3);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.reset-button:hover {
+  background: rgba(116, 199, 236, 0.25);
+  border-color: rgba(116, 199, 236, 0.5);
+  transform: translateY(-1px);
+}
+
+.reset-button svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Info Boxes */
+.info-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-box {
+  background: rgba(49, 50, 68, 0.4); /* Catppuccin surface0 with transparency */
+  border: 1px solid #45475a; /* Catppuccin surface1 */
+  border-radius: 10px;
+  padding: 1.2rem;
+}
+
+.info-box h4 {
+  margin: 0 0 0.8rem 0;
+  color: #cdd6f4; /* Catppuccin text */
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.info-box p {
+  margin: 0;
+  color: #a6adc8; /* Catppuccin subtext0 */
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.info-box.high-earners {
+  border-left: 4px solid #89b4fa; /* Catppuccin blue */
+}
+
+.info-box.entry-level {
+  border-left: 4px solid #a6e3a1; /* Catppuccin green */
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .compensation-layout {
+    flex-direction: column;
+    height: auto;
+    gap: 1.5rem;
+  }
+
+  .compensation-sidebar {
+    width: 100%;
+    flex-direction: row;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-right: 0;
+  }
+
+  .filters-panel {
+    min-width: 280px;
+    flex-shrink: 0;
+  }
+
+  .info-boxes {
+    min-width: 300px;
+    flex-shrink: 0;
+  }
 }
