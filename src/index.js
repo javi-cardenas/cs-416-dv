@@ -2,9 +2,9 @@ import {
   createBarChart,
   createScatterPlot,
   createStackedBarChart,
-} from "./utils.js";
-import { initializeCompensationFilters } from "./filter.js";
-import { initializeNavigation } from "./nav.js";
+} from "./components/charts.js";
+import { initializeCompensationFilters } from "./components/filter.js";
+import { initializeNavigation } from "./components/nav.js";
 
 document.addEventListener("DOMContentLoaded", init);
 
