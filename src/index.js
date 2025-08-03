@@ -292,19 +292,23 @@ function processLanguageAIAdoptionData(rawData, languageData) {
       yes: languageAIStats[lang.language].yes,
       no: languageAIStats[lang.language].no,
       total: languageAIStats[lang.language].total,
-      yesPercentage: (
-        (languageAIStats[lang.language].yes /
-          languageAIStats[lang.language].total) *
-        100
-      ).toFixed(1),
-      noPercentage: (
-        (languageAIStats[lang.language].no /
-          languageAIStats[lang.language].total) *
-        100
-      ).toFixed(1),
+      yesPercentage: parseFloat(
+        (
+          (languageAIStats[lang.language].yes /
+            languageAIStats[lang.language].total) *
+          100
+        ).toFixed(1)
+      ),
+      noPercentage: parseFloat(
+        (
+          (languageAIStats[lang.language].no /
+            languageAIStats[lang.language].total) *
+          100
+        ).toFixed(1)
+      ),
     }))
     .filter((lang) => lang.total >= 50)
-    .sort((a, b) => parseFloat(b.yesPercentage) - parseFloat(a.yesPercentage));
+    .sort((a, b) => b.yesPercentage - a.yesPercentage);
 }
 
 /**
@@ -453,18 +457,19 @@ function createLanguageAIChart(data, rawData) {
 
   createStackedBarChart("#language-ai-chart", data, {
     xField: "language",
-    stackFields: ["yes", "no"],
+    stackFields: ["yesPercentage", "noPercentage"],
     stackLabels: ["Yes", "No"],
     colors: ["#40a02b", "#d20f39"],
     xAxisLabel: "Programming Language",
-    yAxisLabel: "Number of Developers",
+    yAxisLabel: "Percentage of Developers (%)",
     rotateXLabels: true,
     showLegend: true,
     showPercentageLabels: true,
+    usePercentageScale: true,
 
     averagePercentages: {
-      yes: avgYesPercentage,
-      no: avgNoPercentage,
+      yesPercentage: avgYesPercentage,
+      noPercentage: avgNoPercentage,
     },
     width: 1000,
     height: 600,

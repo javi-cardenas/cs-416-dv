@@ -403,7 +403,11 @@ function createStackedBarChart(containerId, data, options = {}) {
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(stackedData[stackedData.length - 1], (d) => d[1])])
+    .domain(
+      config.usePercentageScale
+        ? [0, 100]
+        : [0, d3.max(stackedData[stackedData.length - 1], (d) => d[1])]
+    )
     .range([height, 0]);
 
   const colorScale = d3.scaleOrdinal().range(config.colors);
@@ -462,10 +466,27 @@ function createStackedBarChart(containerId, data, options = {}) {
       const stackIndex = d3.select(this.parentNode).datum().index;
       const stackLabel = config.stackLabels[stackIndex];
       const value = d[1] - d[0];
-      const percentage = ((value / d.data.total) * 100).toFixed(1);
+      let percentage;
 
-      let tooltipContent = `<strong>${d.data[config.xField]}</strong><br/>
-           ${stackLabel}: ${value.toLocaleString()} developers (${percentage}%)`;
+      if (config.usePercentageScale) {
+        // For percentage scale, the value IS the percentage
+        percentage = value.toFixed(1);
+      } else {
+        // For count scale, calculate percentage from total
+        percentage = ((value / d.data.total) * 100).toFixed(1);
+      }
+
+      let tooltipContent = `<strong>${d.data[config.xField]}</strong><br/>`;
+
+      if (config.usePercentageScale) {
+        // For percentage scale, show the percentage and actual count
+        const actualCount = stackLabel === "Yes" ? d.data.yes : d.data.no;
+        tooltipContent += `${stackLabel}: ${percentage}% (${actualCount.toLocaleString()} developers)<br/>`;
+        tooltipContent += `<em>Total developers: ${d.data.total.toLocaleString()}</em>`;
+      } else {
+        // For count scale, show count and percentage
+        tooltipContent += `${stackLabel}: ${value.toLocaleString()} developers (${percentage}%)`;
+      }
 
       // Add difference from average if available
       if (config.averagePercentages && config.stackFields) {
@@ -514,7 +535,16 @@ function createStackedBarChart(containerId, data, options = {}) {
         .style("pointer-events", "none")
         .text((d) => {
           const value = d[1] - d[0];
-          const percentage = (value / d.data.total) * 100;
+          let percentage;
+
+          if (config.usePercentageScale) {
+            // For percentage scale, the value IS the percentage
+            percentage = value;
+          } else {
+            // For count scale, calculate percentage from total
+            percentage = (value / d.data.total) * 100;
+          }
+
           return percentage >= 5 ? `${percentage.toFixed(1)}%` : ""; // Only show if >= 5%
         });
     });
