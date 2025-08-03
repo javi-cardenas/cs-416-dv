@@ -17,7 +17,7 @@
       <!-- Navigation -->
       <nav class="scene-navigation">
         <button id="previous" disabled>← Previous</button>
-        <span id="scene-indicator">Scene 1 of 3</span>
+        <span id="scene-indicator">Scene 1 of 4</span>
         <button id="next">Next →</button>
       </nav>
 
@@ -54,17 +54,26 @@
         <div class="scene-content">
           <h2>AI Tool Adoption in Development</h2>
           <p>
-            Explore how developers are adopting AI tools in their workflow.
-            Select different AI tools to see adoption patterns across experience
-            levels.
+            Explore AI tool adoption among developers. This visualization shows
+            the percentage breakdown of developers who currently use AI tools,
+            those who plan to use them, and those who don't plan to use them.
           </p>
-          <div class="controls">
-            <label for="ai-tool-select">AI Tool:</label>
-            <select id="ai-tool-select">
-              <option value="">Select an AI tool...</option>
-            </select>
-          </div>
+
           <div id="ai-adoption-chart" class="chart-container"></div>
+        </div>
+      </section>
+
+      <!-- Scene 4: AI Adoption by Programming Language -->
+      <section id="scene-4" class="scene">
+        <div class="scene-content">
+          <h2>AI Adoption by Programming Language</h2>
+          <p>
+            How does AI tool adoption vary across different programming language
+            communities? This stacked bar chart reveals which language
+            communities are most enthusiastic about AI tools, and which are more
+            resistant to adoption.
+          </p>
+          <div id="language-ai-chart" class="chart-container"></div>
         </div>
       </section>
     </main>
