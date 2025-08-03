@@ -6,7 +6,7 @@ import {
 import { initializeCompensationFilters } from "./components/filter.js";
 import { initializeNavigation } from "./components/nav.js";
 
-const MAX_LANGUAGES = 30; // Adjust this to change how many languages are displayed
+const MAX_LANGUAGES = 20; // Adjust this to change how many languages are displayed
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -55,7 +55,7 @@ async function init() {
       } else if (sceneIndex === 3) {
         updateAIAdoptionChart(null, rawData);
       } else if (sceneIndex === 4) {
-        createLanguageAIChart(languageAIData);
+        createLanguageAIChart(languageAIData, rawData);
       }
     }
   } catch (error) {
@@ -122,26 +122,31 @@ async function loadSurveyData() {
 function updateAIAdoptionChart(selectedTool, rawData) {
   console.log("Updating AI adoption chart for:", selectedTool);
   const totalResponses = rawData.length;
-  const aiCategories = {};
+  const aiCategories = { Yes: 0, No: 0 };
 
   rawData.forEach((d) => {
     if (d.AISelect) {
-      const category = d.AISelect.trim();
-      aiCategories[category] = (aiCategories[category] || 0) + 1;
+      const response = d.AISelect.trim();
+      if (response === "Yes") {
+        aiCategories["Yes"]++;
+      } else if (
+        response === "No, but I plan to soon" ||
+        response === "No, and I don't plan to"
+      ) {
+        aiCategories["No"]++;
+      }
     }
   });
 
   // Create ordered categories for display
-  const categoryOrder = ["Yes", "No, but I plan to", "No, and I don't plan to"];
-  const overallPercentages = categoryOrder
-    .filter((category) => aiCategories[category]) // Only include categories that exist in data
-    .map((category) => ({
-      category,
-      count: aiCategories[category] || 0,
-      percentage: parseFloat(
-        (((aiCategories[category] || 0) / totalResponses) * 100).toFixed(1)
-      ),
-    }));
+  const categoryOrder = ["Yes", "No"];
+  const overallPercentages = categoryOrder.map((category) => ({
+    category,
+    count: aiCategories[category] || 0,
+    percentage: parseFloat(
+      (((aiCategories[category] || 0) / totalResponses) * 100).toFixed(1)
+    ),
+  }));
 
   createBarChart("#ai-adoption-chart", overallPercentages, {
     xField: "category",
@@ -232,9 +237,7 @@ function getColorForCategory(category) {
   switch (category) {
     case "Yes":
       return "#40a02b";
-    case "No, but I plan to":
-      return "#fe640b";
-    case "No, and I don't plan to":
+    case "No":
       return "#d20f39";
     default:
       return "#6c6f85";
@@ -255,8 +258,7 @@ function processLanguageAIAdoptionData(rawData, languageData) {
   topLanguages.forEach((lang) => {
     languageAIStats[lang.language] = {
       yes: 0,
-      planning: 0,
-      notPlanning: 0,
+      no: 0,
       total: 0,
     };
   });
@@ -273,10 +275,11 @@ function processLanguageAIAdoptionData(rawData, languageData) {
 
           if (aiResponse === "Yes") {
             languageAIStats[cleanLang].yes++;
-          } else if (aiResponse === "No, but I plan to") {
-            languageAIStats[cleanLang].planning++;
-          } else if (aiResponse === "No, and I don't plan to") {
-            languageAIStats[cleanLang].notPlanning++;
+          } else if (
+            aiResponse === "No, but I plan to soon" ||
+            aiResponse === "No, and I don't plan to"
+          ) {
+            languageAIStats[cleanLang].no++;
           }
         }
       });
@@ -287,27 +290,21 @@ function processLanguageAIAdoptionData(rawData, languageData) {
     .map((lang) => ({
       language: lang.language,
       yes: languageAIStats[lang.language].yes,
-      planning: languageAIStats[lang.language].planning,
-      notPlanning: languageAIStats[lang.language].notPlanning,
+      no: languageAIStats[lang.language].no,
       total: languageAIStats[lang.language].total,
       yesPercentage: (
         (languageAIStats[lang.language].yes /
           languageAIStats[lang.language].total) *
         100
       ).toFixed(1),
-      planningPercentage: (
-        (languageAIStats[lang.language].planning /
-          languageAIStats[lang.language].total) *
-        100
-      ).toFixed(1),
-      notPlanningPercentage: (
-        (languageAIStats[lang.language].notPlanning /
+      noPercentage: (
+        (languageAIStats[lang.language].no /
           languageAIStats[lang.language].total) *
         100
       ).toFixed(1),
     }))
     .filter((lang) => lang.total >= 50)
-    .sort((a, b) => b.total - a.total);
+    .sort((a, b) => parseFloat(b.yesPercentage) - parseFloat(a.yesPercentage));
 }
 
 /**
@@ -427,20 +424,48 @@ function processCompensationDataWithLanguages(data) {
 /**
  * Creates stacked bar chart showing AI adoption by programming language
  * @param {Array<Object>} data - Processed language-AI adoption data
+ * @param {Array<Object>} rawData - Raw survey data for calculating overall averages
  */
-function createLanguageAIChart(data) {
+function createLanguageAIChart(data, rawData) {
   console.log("Creating language AI adoption stacked bar chart...");
   console.log(`Showing ${data.length} languages with AI adoption data`);
 
+  // Calculate overall averages from Scene 3 data
+  const totalResponses = rawData.length;
+  const overallYes = rawData.filter(
+    (d) => d.AISelect && d.AISelect.trim() === "Yes"
+  ).length;
+  const overallNo = rawData.filter(
+    (d) =>
+      d.AISelect &&
+      (d.AISelect.trim() === "No, but I plan to soon" ||
+        d.AISelect.trim() === "No, and I don't plan to")
+  ).length;
+
+  const avgYesPercentage = (overallYes / totalResponses) * 100;
+  const avgNoPercentage = (overallNo / totalResponses) * 100;
+
+  console.log(
+    `Overall averages: Yes ${avgYesPercentage.toFixed(
+      1
+    )}%, No ${avgNoPercentage.toFixed(1)}%`
+  );
+
   createStackedBarChart("#language-ai-chart", data, {
     xField: "language",
-    stackFields: ["yes", "planning", "notPlanning"],
-    stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#40a02b", "#fe640b", "#d20f39"],
+    stackFields: ["yes", "no"],
+    stackLabels: ["Yes", "No"],
+    colors: ["#40a02b", "#d20f39"],
     xAxisLabel: "Programming Language",
     yAxisLabel: "Number of Developers",
     rotateXLabels: true,
     showLegend: true,
+    showPercentageLabels: true,
+
+    averagePercentages: {
+      yes: avgYesPercentage,
+      no: avgNoPercentage,
+    },
     width: 1000,
     height: 600,
     margin: { top: 40, right: 180, bottom: 120, left: 80 },

@@ -464,18 +464,61 @@ function createStackedBarChart(containerId, data, options = {}) {
       const value = d[1] - d[0];
       const percentage = ((value / d.data.total) * 100).toFixed(1);
 
+      let tooltipContent = `<strong>${d.data[config.xField]}</strong><br/>
+           ${stackLabel}: ${value.toLocaleString()} developers (${percentage}%)`;
+
+      // Add difference from average if available
+      if (config.averagePercentages && config.stackFields) {
+        const stackField = config.stackFields[stackIndex];
+        const avgPercentage = config.averagePercentages[stackField];
+        const difference = parseFloat(percentage) - avgPercentage;
+        const sign = difference > 0 ? "+" : "";
+
+        tooltipContent += `<br/><em>Overall average: ${avgPercentage.toFixed(
+          1
+        )}%</em>`;
+        tooltipContent += `<br/><em>Difference: ${sign}${difference.toFixed(
+          1
+        )}%</em>`;
+      }
+
       tooltip.transition().duration(200).style("opacity", 0.9);
       tooltip
-        .html(
-          `<strong>${d.data[config.xField]}</strong><br/>
-           ${stackLabel}: ${value.toLocaleString()} developers (${percentage}%)`
-        )
+        .html(tooltipContent)
         .style("left", event.pageX + 10 + "px")
         .style("top", event.pageY - 28 + "px");
     })
     .on("mouseout", function () {
       tooltip.transition().duration(500).style("opacity", 0);
     });
+
+  // Add percentage labels if enabled
+  if (config.showPercentageLabels) {
+    layers.each(function (layerData, layerIndex) {
+      d3.select(this)
+        .selectAll("text")
+        .data(layerData)
+        .enter()
+        .append("text")
+        .attr("x", (d) => x(d.data[config.xField]) + x.bandwidth() / 2)
+        .attr("y", (d) => {
+          const segmentHeight = y(d[0]) - y(d[1]);
+          return y(d[1]) + segmentHeight / 2;
+        })
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .style("font-size", "11px")
+        .style("font-weight", "bold")
+        .style("fill", "white")
+        .style("text-shadow", "1px 1px 2px rgba(0,0,0,0.7)")
+        .style("pointer-events", "none")
+        .text((d) => {
+          const value = d[1] - d[0];
+          const percentage = (value / d.data.total) * 100;
+          return percentage >= 5 ? `${percentage.toFixed(1)}%` : ""; // Only show if >= 5%
+        });
+    });
+  }
 
   // Add legend if enabled
   if (config.showLegend) {

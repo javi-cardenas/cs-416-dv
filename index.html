@@ -47,8 +47,8 @@
 
             <h3>The Data</h3>
             <p>
-              This analysis draws from responses from over 65,000 developers
-              worldwide, technology preferences, compensation, and AI tool
+              This analysis draws from about 30,000 responses from developers
+              worldwide on technology preferences, compensation, and AI
               adoption.
             </p>
 
@@ -79,8 +79,25 @@
           </div>
 
           <div class="compensation-sidebar">
+            <div class="info-box entry-level">
+              <h4>Entry Level</h4>
+              <p>
+                Programming languages such as R, Rust, and Python are more
+                favored by early career developers.
+              </p>
+            </div>
+
+            <div class="info-box high-earners">
+              <h4>High Earners</h4>
+              <p>
+                While JavaScript is very popular, niche programming languages
+                such as Go and Ruby may offer a higher salary but require more
+                experience.
+              </p>
+            </div>
+
             <div class="filters-panel">
-              <h3>Filters</h3>
+              <h3>Filter</h3>
 
               <div class="filter-group">
                 <label>Min. Responses</label>
@@ -97,68 +114,6 @@
                 </div>
               </div>
 
-              <div class="filter-group">
-                <label>Years</label>
-                <div
-                  class="dual-range-container"
-                  id="experience-range-container"
-                >
-                  <input
-                    type="range"
-                    id="experience-min"
-                    min="0"
-                    max="15"
-                    value="0"
-                    step="0.5"
-                    class="dual-range-min"
-                  />
-                  <input
-                    type="range"
-                    id="experience-max"
-                    min="0"
-                    max="15"
-                    value="15"
-                    step="0.5"
-                    class="dual-range-max"
-                  />
-                  <div class="range-values">
-                    <span>Min: <span id="experience-min-value">0</span></span> -
-                    <span>Max: <span id="experience-max-value">15</span></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="filter-group">
-                <label>Compensation ($)</label>
-                <div
-                  class="dual-range-container"
-                  id="compensation-range-container"
-                >
-                  <input
-                    type="range"
-                    id="comp-min"
-                    min="0"
-                    max="200000"
-                    value="0"
-                    step="5000"
-                    class="dual-range-min"
-                  />
-                  <input
-                    type="range"
-                    id="comp-max"
-                    min="0"
-                    max="200000"
-                    value="200000"
-                    step="5000"
-                    class="dual-range-max"
-                  />
-                  <div class="range-values">
-                    <span>Min: <span id="comp-min-value">$0</span></span> -
-                    <span>Max: <span id="comp-max-value">$200,000</span></span>
-                  </div>
-                </div>
-              </div>
-
               <button id="reset-filters" class="reset-button">
                 <svg
                   width="16"
@@ -172,25 +127,6 @@
                 </svg>
                 Reset
               </button>
-            </div>
-
-            <div class="info-boxes">
-              <div class="info-box entry-level">
-                <h4>Entry Level</h4>
-                <p>
-                  Programming languages such as R, Rust, and Python are more
-                  favored by early career developers.
-                </p>
-              </div>
-
-              <div class="info-box high-earners">
-                <h4>High Earners</h4>
-                <p>
-                  While JavaScript is very popular, niche programming languages
-                  such as Go and Ruby may offer a higher salary but require more
-                  experience.
-                </p>
-              </div>
             </div>
           </div>
         </div>
