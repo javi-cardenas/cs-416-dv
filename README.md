@@ -1,6 +1,6 @@
 # Modern Software Development
 
-This project is an interactive narrative visualization designed to illustrate key insights from the 2024 Stack Overflow Developer Survey. The visualization is implemented using D3.js and follows the slideshow narrative structure to guide the audience through a focused story about modern software development trends before allowing them to explore the data further.
+This project is an interactive narrative visualization designed to illustrate key insights from the 2024 Stack Overflow Developer Survey. The visualization is implemented using D3.js and follows the slideshow narrative structure to guide the audience through a focused story about modern software development trends.
 
 ## Overview
 
@@ -16,14 +16,14 @@ The visualization consists of five main scenes:
 
 ### 1. Messaging
 
-The primary message of this visualization is to convey the current state of the software development industry through four key lenses: programming language popularity, AI adoption patterns, language-specific AI trends, and compensation dynamics. It tells the story of which technologies dominate the field, how modern developers are embracing AI tools across different programming communities, and how experience and language choice impact earnings.
+The primary message of this visualization is to convey the current state of the software development industry through four key lenses: programming language popularity, AI adoption statistics, language-specific AI patterns, and compensation trends. It tells the story of which technologies dominate the field, how modern developers are embracing AI tools across different programming communities, and how experience and language choice impact earnings.
 
 ### 2. Narrative Structure
 
 This project follows the **Slideshow** narrative structure:
 
 - **Guided Narrative:** The first four scenes present a progressive story, leading the viewer through key insights about programming language popularity, AI adoption trends, and language-specific patterns.
-- **Interactive Exploration:** The final scene allows users to explore compensation data through an interactive scatter plot with filtering capabilities for deeper analysis.
+- **Interactive Exploration:** Each scene allows users to explore further statistics about the dataset. The final scene allows for filtering on the interactive compensation scatter plot.
 
 ### 3. Visual Structure
 
@@ -41,7 +41,7 @@ The visualization is divided into five scenes:
 - **Scene 1:** A bar chart displaying the most popular programming languages among developers.
 - **Scene 2:** A bar chart showing overall AI adoption patterns with detailed statistics.
 - **Scene 3:** A stacked bar chart revealing AI adoption rates by programming language, sorted by adoption percentage.
-- **Scene 4:** An interactive scatter plot showing the relationship between years of experience and annual compensation, with filtering capabilities.
+- **Scene 4:** An interactive scatter plot showing the relationship between years of experience and annual compensation.
 
 ### 5. Annotations
 
@@ -49,40 +49,21 @@ Interactive elements enhance data exploration:
 
 - **Tooltips:** Provide detailed information on hover for all chart elements.
 - **Scene Indicators:** Clear navigation showing current progress through the story.
-- **Dynamic Labels:** Charts update with contextual axis labels and titles.
 
 ### 6. Parameters
 
 The key parameters include:
 
-- **Current Scene:** Tracks the currently displayed scene (0 of 4).
-- **Compensation Filters:** Experience range and minimum response thresholds for Scene 4 analysis.
-- **Data Sample:** Optimized data loading and processing for performance.
-- **Language Selection:** Top programming languages with sufficient sample sizes for meaningful analysis.
+- **Current Scene:** Tracks the currently displayed scene.
+- **Compensation Filter:** Interactive sliders for exploring programming languages based on survey responses.
 
 ### 7. Triggers
 
 User interactions drive changes in the visualization:
 
 - **Next/Previous Buttons:** Navigate between scenes with proper state management.
-- **Compensation Filters:** Interactive sliders and controls for exploring salary data in Scene 4.
+- **Compensation Filters** Interactive sliders for exploring programming languages based on survey responses.
 - **Hover Interactions:** Reveal detailed information through tooltips across all chart types.
-
-## Technical Implementation
-
-### Data Processing
-
-- **Smart Sampling:** Loads 1000 random records from the full dataset for performance optimization.
-- **Data Cleaning:** Filters out null values, outliers, and invalid entries.
-- **Multiple Processing Pipelines:** Different data transformations for each visualization type.
-- **Fallback System:** Mock data generator for development and testing.
-
-### Performance Features
-
-- **Modular Architecture:** Reusable chart functions separated into utility modules.
-- **Efficient Rendering:** Clear and redraw strategy for smooth scene transitions.
-- **Error Handling:** Graceful degradation with fallback data when needed.
-- **Responsive Design:** Mobile-friendly layout with adaptive styling.
 
 ## Usage
 
@@ -92,7 +73,7 @@ User interactions drive changes in the visualization:
 
    ```sh
    git clone [repository-url]
-   cd cs-416-dv
+   cd modern-software-development
    ```
 
 2. **Start a local server:**
@@ -110,18 +91,12 @@ User interactions drive changes in the visualization:
 3. **Open in browser:**
    Navigate to `http://localhost:8080` (or the port shown by your server)
 
-### Interacting with the Visualization
-
-- **Scene Navigation:** Use the "Previous" and "Next" buttons to move through the five scenes.
-- **Compensation Analysis:** In Scene 4, use the filter controls to explore salary patterns by experience and response thresholds.
-- **Data Details:** Hover over chart elements to see detailed information in tooltips, including AI adoption breakdowns and compensation statistics.
-
 ## Project Structure
 
 ```
 cs-416-dv/
-├── index.html                    # Main HTML file
-├── style.css                     # Styling and responsive design
+├── index.html                   # Main HTML file
+├── style.css                    # Styling and responsive design
 ├── data/
 │   └── project-dataset/
 │       └── data.json            # Processed Stack Overflow survey data
@@ -129,7 +104,7 @@ cs-416-dv/
 │   ├── index.js                 # Main application logic
 │   └── components/
 │       └── charts.js            # Reusable D3.js chart functions
-└── README.md                   # Project documentation
+└── README.md                    # Project documentation
 ```
 
 ## Dependencies
@@ -176,5 +151,3 @@ This project is licensed under the MIT License.
 - **CS 416 Data Visualization:** Course framework and narrative visualization principles.
 
 ---
-
-This interactive narrative visualization provides a comprehensive exploration of the modern software development landscape through the lens of the Stack Overflow Developer Survey 2024, revealing key trends in programming language popularity, AI adoption patterns across different communities, and the relationship between technology choices and compensation in developer workflows.
