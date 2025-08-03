@@ -86,18 +86,20 @@ function createBarChart(containerId, data, options = {}) {
     .style("opacity", 0)
     .style("border", "1px solid #bcc0cc");
 
-  g.selectAll(".bar")
+  const bars = g
+    .selectAll(".bar")
     .data(data)
     .enter()
     .append("rect")
     .attr("class", "bar")
     .attr("x", (d) => x(d[config.xField]))
-    .attr("y", (d) => y(d[config.yField]))
+    .attr("y", height)
     .attr("width", x.bandwidth())
-    .attr("height", (d) => height - y(d[config.yField]))
+    .attr("height", 0)
     .attr("fill", (d) =>
       config.colorFunction ? config.colorFunction(d) : config.color
     )
+    .attr("opacity", 0)
     .on("mouseover", function (event, d) {
       let tooltipContent = "";
 
@@ -132,6 +134,15 @@ function createBarChart(containerId, data, options = {}) {
       tooltip.transition().duration(500).style("opacity", 0);
     });
 
+  bars
+    .transition()
+    .duration(800)
+    .delay((d, i) => i * 100)
+    .ease(d3.easeBackOut.overshoot(0.1))
+    .attr("y", (d) => y(d[config.yField]))
+    .attr("height", (d) => height - y(d[config.yField]))
+    .attr("opacity", 1);
+
   // Add percentage labels on bars
   if (data.length > 0 && data[0].hasOwnProperty("percentage")) {
     g.selectAll(".bar-label")
@@ -140,12 +151,19 @@ function createBarChart(containerId, data, options = {}) {
       .append("text")
       .attr("class", "bar-label")
       .attr("x", (d) => x(d[config.xField]) + x.bandwidth() / 2)
-      .attr("y", (d) => y(d[config.yField]) - 5)
+      .attr("y", height - 5)
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .style("font-weight", "bold")
       .style("fill", "#4c4f69")
-      .text((d) => d.percentage + "%");
+      .style("opacity", 0)
+      .text((d) => d.percentage + "%")
+      .transition()
+      .duration(800)
+      .delay((d, i) => i * 100 + 400)
+      .ease(d3.easeBackOut.overshoot(0.1))
+      .attr("y", (d) => y(d[config.yField]) - 5)
+      .style("opacity", 1);
   }
 
   // Axis labels
@@ -293,20 +311,19 @@ function createScatterPlot(containerId, data, options = {}) {
   }
 
   // Circles
-  g.selectAll(".chart-dot")
+  const circles = g
+    .selectAll(".chart-dot")
     .data(data)
     .enter()
     .append("circle")
     .attr("class", "chart-dot")
     .attr("cx", (d) => x(d[config.xField]))
     .attr("cy", (d) => y(d[config.yField]))
-    .attr("r", (d) =>
-      radiusScale ? radiusScale(d[config.radiusField]) : config.radius
-    )
+    .attr("r", 0)
     .attr("fill", (d) =>
       colorScale ? colorScale(d[config.colorField]) : config.color
     )
-    .attr("opacity", 0.7)
+    .attr("opacity", 0)
     .on("mouseover", function (event, d) {
       if (tooltip) {
         let tooltipContent = "";
@@ -350,6 +367,16 @@ function createScatterPlot(containerId, data, options = {}) {
       }
     });
 
+  circles
+    .transition()
+    .duration(800)
+    .delay((d, i) => i * 50)
+    .ease(d3.easeBackOut.overshoot(0.2))
+    .attr("r", (d) =>
+      radiusScale ? radiusScale(d[config.radiusField]) : config.radius
+    )
+    .attr("opacity", 0.7);
+
   if (
     config.colorField &&
     data.length > 0 &&
@@ -379,8 +406,13 @@ function createScatterPlot(containerId, data, options = {}) {
       .style("fill", "#4c4f69")
       .style("text-anchor", "start")
       .style("pointer-events", "none") // Prevent interfering with dot interactions
-      .style("opacity", 0.9) // Slightly transparent to reduce visual clutter
-      .text((d) => d[config.colorField]);
+      .style("opacity", 0)
+      .text((d) => d[config.colorField])
+      .transition()
+      .duration(600)
+      .delay((d, i) => i * 50 + 400)
+      .ease(d3.easeQuadOut)
+      .style("opacity", 0.9); // Slightly transparent to reduce visual clutter
   }
 
   // Axis labels
@@ -521,15 +553,16 @@ function createStackedBarChart(containerId, data, options = {}) {
       d.index = i;
     }); // Store the index for tooltip reference
 
-  layers
+  const bars = layers
     .selectAll("rect")
     .data((d) => d)
     .enter()
     .append("rect")
     .attr("x", (d) => x(d.data[config.xField]))
-    .attr("y", (d) => y(d[1]))
-    .attr("height", (d) => y(d[0]) - y(d[1]))
+    .attr("y", height)
+    .attr("height", 0)
     .attr("width", x.bandwidth())
+    .attr("opacity", 0)
     .on("mouseover", function (event, d) {
       const stackIndex = d3.select(this.parentNode).datum().index;
       const stackLabel = config.stackLabels[stackIndex];
@@ -577,6 +610,19 @@ function createStackedBarChart(containerId, data, options = {}) {
       tooltip.transition().duration(500).style("opacity", 0);
     });
 
+  bars
+    .transition()
+    .duration(1000)
+    .delay((d, i, nodes) => {
+      const parentNode = nodes[i].parentNode;
+      const stackIndex = d3.select(parentNode).datum().index || 0;
+      return i * 80 + stackIndex * 200;
+    })
+    .ease(d3.easeBackOut.overshoot(0.1))
+    .attr("y", (d) => y(d[1]))
+    .attr("height", (d) => y(d[0]) - y(d[1]))
+    .attr("opacity", 1);
+
   if (config.showPercentageLabels) {
     layers.each(function (layerData, layerIndex) {
       d3.select(this)
@@ -585,10 +631,7 @@ function createStackedBarChart(containerId, data, options = {}) {
         .enter()
         .append("text")
         .attr("x", (d) => x(d.data[config.xField]) + x.bandwidth() / 2)
-        .attr("y", (d) => {
-          const segmentHeight = y(d[0]) - y(d[1]);
-          return y(d[1]) + segmentHeight / 2;
-        })
+        .attr("y", height)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .style("font-size", "11px")
@@ -596,6 +639,7 @@ function createStackedBarChart(containerId, data, options = {}) {
         .style("fill", "white")
         .style("text-shadow", "1px 1px 2px rgba(0,0,0,0.7)")
         .style("pointer-events", "none")
+        .style("opacity", 0)
         .text((d) => {
           const value = d[1] - d[0];
           let percentage;
@@ -607,7 +651,16 @@ function createStackedBarChart(containerId, data, options = {}) {
           }
 
           return percentage >= 5 ? `${percentage.toFixed(1)}%` : "";
-        });
+        })
+        .transition()
+        .duration(1000)
+        .delay((d, i) => i * 80 + layerIndex * 200 + 600)
+        .ease(d3.easeBackOut.overshoot(0.1))
+        .attr("y", (d) => {
+          const segmentHeight = y(d[0]) - y(d[1]);
+          return y(d[1]) + segmentHeight / 2;
+        })
+        .style("opacity", 1);
     });
   }
 
@@ -626,7 +679,8 @@ function createStackedBarChart(containerId, data, options = {}) {
       .enter()
       .append("g")
       .attr("class", "legend-item")
-      .attr("transform", (d, i) => `translate(0, ${i * 25})`);
+      .attr("transform", (d, i) => `translate(0, ${i * 25})`)
+      .style("opacity", 0);
 
     legendItems
       .append("rect")
@@ -641,6 +695,13 @@ function createStackedBarChart(containerId, data, options = {}) {
       .attr("dy", "0.35em")
       .style("font-size", "12px")
       .text((d) => d);
+
+    legendItems
+      .transition()
+      .duration(600)
+      .delay((d, i) => i * 150 + 1200)
+      .ease(d3.easeQuadOut)
+      .style("opacity", 1);
   }
 
   // Axis labels
