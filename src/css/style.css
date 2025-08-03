@@ -126,7 +126,7 @@ main {
   transform: scale(1.1);
 }
 
-/* Scene Styles */
+/* General Scene Styles */
 .scene {
   display: none;
   background: #181825;
@@ -140,7 +140,21 @@ main {
   display: block;
 }
 
-/* Scene 0 - Project Introduction */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   SCENE 0 - PROJECT INTRODUCTION STYLES
+   ======================================== */
+
 #scene-0 h1 {
   color: #89b4fa; /* Catppuccin blue */
   font-size: 2rem;
@@ -225,18 +239,12 @@ main {
   font-weight: 500;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* ========================================
+   GENERAL SCENE CONTENT STYLES
+   ======================================== */
 
 .scene-content h2 {
+  text-align: center;
   font-size: 1.6rem;
   margin-bottom: 0.8rem;
   color: #cdd6f4;
@@ -351,12 +359,13 @@ svg {
     font-size: 1.4rem;
   }
 
-  #scene-0 h1 {
-    font-size: 1.7rem;
-  }
-
   body {
     padding-bottom: 60px;
+  }
+
+  /* Scene 0 Responsive Styles */
+  #scene-0 h1 {
+    font-size: 1.7rem;
   }
 }
 
