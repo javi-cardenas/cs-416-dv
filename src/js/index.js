@@ -132,12 +132,14 @@ async function loadSurveyData() {
     const filteredData = allData.filter(
       (d) =>
         d.YearsCodePro !== null &&
-        d.ConvertedCompYearly !== null &&
         d.LanguageHaveWorkedWith !== null &&
         d.AISelect !== null &&
-        d.ConvertedCompYearly > 0 &&
-        d.ConvertedCompYearly < 500000 && // Remove unrealistic outliers
-        d.YearsCodePro !== "More than 50 years" // Remove edge case
+        d.YearsCodePro !== "More than 50 years" && // Remove edge case
+        // Require either ConvertedCompYearly or CompTotal for compensation data
+        ((d.ConvertedCompYearly !== null &&
+          d.ConvertedCompYearly > 0 &&
+          d.ConvertedCompYearly < 500000) ||
+          (d.CompTotal !== null && d.CompTotal > 0 && d.CompTotal < 500000))
     );
 
     console.log(
@@ -373,7 +375,8 @@ function processLanguageDataWithPercentages(data) {
       percentage: parseFloat(((count / totalResponses) * 100).toFixed(1)),
     }))
     .filter((lang) => lang.percentage > 1.0) // Only show languages with >1% usage
-    .sort((a, b) => b.percentage - a.percentage); // Sort by percentage descending
+    .sort((a, b) => b.percentage - a.percentage) // Sort by percentage descending
+    .slice(0, 15); // Show top 15 languages
 }
 
 function processCompensationDataWithLanguages(data) {
@@ -382,23 +385,34 @@ function processCompensationDataWithLanguages(data) {
   const validLanguages = new Set(languageData.map((lang) => lang.language));
 
   const languageStats = {};
+  let convertedCompCount = 0;
+  let compTotalCount = 0;
 
   data.forEach((d) => {
     if (
       d.LanguageHaveWorkedWith &&
       d.YearsCodePro &&
-      d.ConvertedCompYearly &&
-      d.YearsCodePro !== "More than 50 years" &&
-      d.ConvertedCompYearly > 0
+      d.YearsCodePro !== "More than 50 years"
     ) {
       const experience = parseFloat(d.YearsCodePro);
-      const compensation = parseFloat(d.ConvertedCompYearly);
+
+      // Use ConvertedCompYearly as default, fallback to CompTotal
+      let compensation = null;
+      if (d.ConvertedCompYearly && d.ConvertedCompYearly > 0) {
+        compensation = parseFloat(d.ConvertedCompYearly);
+        convertedCompCount++;
+      } else if (d.CompTotal && d.CompTotal > 0) {
+        compensation = parseFloat(d.CompTotal);
+        compTotalCount++;
+      }
 
       if (
         !isNaN(experience) &&
+        compensation !== null &&
         !isNaN(compensation) &&
         experience <= 30 &&
-        compensation < 500000
+        compensation < 500000 &&
+        compensation > 0
       ) {
         const languages = d.LanguageHaveWorkedWith.split(";");
         languages.forEach((lang) => {
@@ -421,6 +435,12 @@ function processCompensationDataWithLanguages(data) {
     }
   });
 
+  console.log(
+    `Compensation data sources: ${convertedCompCount} from ConvertedCompYearly, ${compTotalCount} from CompTotal (${
+      convertedCompCount + compTotalCount
+    } total)`
+  );
+
   // Calculate averages and return formatted data for all valid languages
   return Object.entries(languageStats)
     .filter(([lang, stats]) => stats.count >= 3) // Reduced minimum to 3 responses for more inclusivity
@@ -431,7 +451,8 @@ function processCompensationDataWithLanguages(data) {
       medianCompensation: d3.median(stats.compensations),
       responseCount: stats.count,
     }))
-    .sort((a, b) => b.responseCount - a.responseCount); // Removed slice limit to show all languages
+    .sort((a, b) => b.responseCount - a.responseCount)
+    .slice(0, 15); // Show top 15 languages by response count
 }
 
 // Chart creation function for Scene 4
