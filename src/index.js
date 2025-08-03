@@ -170,15 +170,15 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     .select("#ai-adoption-chart")
     .insert("div", ":first-child")
     .attr("id", "ai-stats-display")
-    .style("background", "#313244")
+    .style("background", "#ccd0da")
     .style("padding", "15px")
     .style("border-radius", "8px")
     .style("margin-bottom", "20px")
-    .style("border", "1px solid #45475a");
+    .style("border", "1px solid #bcc0cc");
   statsContainer
     .append("h3")
     .style("margin", "0 0 10px 0")
-    .style("color", "#cdd6f4")
+    .style("color", "#4c4f69")
     .text("AI Tool Adoption Survey Results");
 
   const overallStats = statsContainer
@@ -204,7 +204,7 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     statItem
       .append("div")
       .style("font-size", "14px")
-      .style("color", "#a6adc8")
+      .style("color", "#6c6f85")
       .style("max-width", "150px")
       .style("margin", "0 auto")
       .text(`${data.category} (${data.count.toLocaleString()} developers)`);
@@ -215,9 +215,9 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     .style("text-align", "center")
     .style("margin-top", "15px")
     .style("padding-top", "15px")
-    .style("border-top", "1px solid #45475a")
+    .style("border-top", "1px solid #bcc0cc")
     .style("font-size", "14px")
-    .style("color", "#a6adc8")
+    .style("color", "#6c6f85")
     .text(
       `Total survey responses: ${totalResponses.toLocaleString()} developers`
     );
@@ -231,13 +231,13 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
 function getColorForCategory(category) {
   switch (category) {
     case "Yes":
-      return "#a6e3a1";
+      return "#40a02b";
     case "No, but I plan to":
-      return "#fab387";
+      return "#fe640b";
     case "No, and I don't plan to":
-      return "#f38ba8";
+      return "#d20f39";
     default:
-      return "#a6adc8";
+      return "#6c6f85";
   }
 }
 
@@ -436,7 +436,7 @@ function createLanguageAIChart(data) {
     xField: "language",
     stackFields: ["yes", "planning", "notPlanning"],
     stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#a6e3a1", "#fab387", "#f38ba8"],
+    colors: ["#40a02b", "#fe640b", "#d20f39"],
     xAxisLabel: "Programming Language",
     yAxisLabel: "Number of Developers",
     rotateXLabels: true,
@@ -460,7 +460,7 @@ function createLanguageChart(data) {
     xAxisLabel: "Programming Language",
     yAxisLabel: "Responses (%)",
     rotateXLabels: true,
-    color: "#89b4fa",
+    color: "#1e66f5",
     width: 1200,
     height: Math.max(450, Math.min(600, data.length * 22 + 180)),
     margin: { top: 40, right: 30, bottom: 120, left: 60 },

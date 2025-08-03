@@ -8,7 +8,7 @@
  * @param {Object} [options.margin] - Chart margins
  * @param {string} [options.xField="x"] - Property name for x-axis values
  * @param {string} [options.yField="y"] - Property name for y-axis values
- * @param {string} [options.color="#89b4fa"] - Default bar color
+ * @param {string} [options.color="#1e66f5"] - Default bar color
  * @param {string} [options.xAxisLabel=""] - Label for x-axis
  * @param {string} [options.yAxisLabel=""] - Label for y-axis
  * @param {boolean} [options.rotateXLabels=false] - Whether to rotate x-axis labels
@@ -22,7 +22,7 @@ function createBarChart(containerId, data, options = {}) {
     margin: { top: 20, right: 30, bottom: 100, left: 50 },
     xField: "x",
     yField: "y",
-    color: "#89b4fa",
+    color: "#1e66f5",
     xAxisLabel: "",
     yAxisLabel: "",
     rotateXLabels: false,
@@ -98,7 +98,7 @@ function createBarChart(containerId, data, options = {}) {
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .style("font-weight", "bold")
-      .style("fill", "#cdd6f4")
+      .style("fill", "#4c4f69")
       .text((d) => d.percentage + "%");
   }
 
@@ -138,7 +138,7 @@ function createBarChart(containerId, data, options = {}) {
  * @param {string} [options.radiusField=null] - Property name for circle radius sizing
  * @param {string} [options.colorField=null] - Property name for circle coloring
  * @param {number} [options.radius=5] - Default circle radius
- * @param {string} [options.color="#89b4fa"] - Default circle color
+ * @param {string} [options.color="#1e66f5"] - Default circle color
  * @param {string} [options.xAxisLabel=""] - Label for x-axis
  * @param {string} [options.yAxisLabel=""] - Label for y-axis
  * @param {boolean} [options.showTooltip=true] - Whether to show tooltips on hover
@@ -154,7 +154,7 @@ function createScatterPlot(containerId, data, options = {}) {
     radiusField: null,
     colorField: null,
     radius: 5,
-    color: "#89b4fa",
+    color: "#1e66f5",
     xAxisLabel: "",
     yAxisLabel: "",
     showTooltip: true,
@@ -204,21 +204,21 @@ function createScatterPlot(containerId, data, options = {}) {
       new Set(data.map((d) => d[config.colorField]))
     );
     const catppuccinColors = [
-      "#89b4fa",
-      "#cba6f7",
-      "#f38ba8",
-      "#fab387",
-      "#f9e2af",
-      "#a6e3a1",
-      "#94e2d5",
-      "#89dceb",
-      "#b4befe",
-      "#f5c2e7",
-      "#cdd6f4",
-      "#bac2de",
-      "#a6adc8",
-      "#9399b2",
-      "#7f849c",
+      "#1e66f5",
+      "#8839ef",
+      "#d20f39",
+      "#fe640b",
+      "#df8e1d",
+      "#40a02b",
+      "#179299",
+      "#04a5e5",
+      "#7287fd",
+      "#ea76cb",
+      "#4c4f69",
+      "#5c5f77",
+      "#6c6f85",
+      "#7c7f93",
+      "#8c8fa1",
     ];
     colorScale = d3.scaleOrdinal(catppuccinColors).domain(colorDomain);
   }
@@ -240,8 +240,8 @@ function createScatterPlot(containerId, data, options = {}) {
       .attr("class", "tooltip")
       .style("position", "absolute")
       .style("padding", "10px")
-      .style("background", "rgba(24, 24, 37, 0.95)")
-      .style("color", "#cdd6f4")
+      .style("background", "rgba(239, 241, 245, 0.95)")
+      .style("color", "#4c4f69")
       .style("border-radius", "5px")
       .style("pointer-events", "none")
       .style("opacity", 0);
@@ -308,7 +308,7 @@ function createScatterPlot(containerId, data, options = {}) {
       )
       .style("font-size", "10px")
       .style("font-weight", "500")
-      .style("fill", "#cdd6f4")
+      .style("fill", "#4c4f69")
       .style("text-anchor", "start")
       .style("pointer-events", "none") // Prevent interfering with dot interactions
       .style("opacity", 0.9) // Slightly transparent to reduce visual clutter
@@ -365,7 +365,7 @@ function createStackedBarChart(containerId, data, options = {}) {
     xField: "language",
     stackFields: ["yes", "planning", "notPlanning"],
     stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#a6e3a1", "#fab387", "#f38ba8"],
+    colors: ["#40a02b", "#fe640b", "#d20f39"],
     xAxisLabel: "",
     yAxisLabel: "",
     rotateXLabels: true,
@@ -431,8 +431,8 @@ function createStackedBarChart(containerId, data, options = {}) {
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("padding", "10px")
-    .style("background", "rgba(24, 24, 37, 0.95)")
-    .style("color", "#cdd6f4")
+    .style("background", "rgba(239, 241, 245, 0.95)")
+    .style("color", "#4c4f69")
     .style("border-radius", "5px")
     .style("pointer-events", "none")
     .style("opacity", 0);
