@@ -66,12 +66,6 @@
       <section id="scene-1" class="scene">
         <div class="scene-content">
           <h2>Popularity of Programming Languages</h2>
-          <!-- <p>
-            Programming languages vary dramatically in their adoption among
-            developers. This visualization shows the percentage of developers
-            who have worked with each language in the past year, revealing clear
-            winners and emerging trends.
-          </p> -->
           <div id="language-chart" class="chart-container"></div>
         </div>
       </section>
@@ -95,8 +89,8 @@
                     type="range"
                     id="responses-slider"
                     min="0"
-                    max="30000"
-                    value="5000"
+                    max="20000"
+                    value="0"
                     step="1000"
                   />
                   <div class="slider-value" id="responses-value">5,000</div>
@@ -104,7 +98,7 @@
               </div>
 
               <div class="filter-group">
-                <label>Average Years of Professional Coding</label>
+                <label>Years</label>
                 <div
                   class="dual-range-container"
                   id="experience-range-container"
@@ -135,7 +129,7 @@
               </div>
 
               <div class="filter-group">
-                <label>Compensation (in $)</label>
+                <label>Compensation ($)</label>
                 <div
                   class="dual-range-container"
                   id="compensation-range-container"
@@ -176,26 +170,25 @@
                     d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"
                   />
                 </svg>
-                RESET
+                Reset
               </button>
             </div>
 
             <div class="info-boxes">
-              <div class="info-box high-earners">
-                <h4>High Earners</h4>
-                <p>
-                  While JavaScript and HTML/CSS enjoy high popularity among
-                  developers, niche programming languages such as Clojure and F#
-                  guarantee a higher salary, but also require more professional
-                  experience.
-                </p>
-              </div>
-
               <div class="info-box entry-level">
                 <h4>Entry Level</h4>
                 <p>
-                  Programming languages such as Scala, Go, Elixir, Ruby, and
-                  Rust are more favorable for career starters.
+                  Programming languages such as R, Rust, and Python are more
+                  favored by early career developers.
+                </p>
+              </div>
+
+              <div class="info-box high-earners">
+                <h4>High Earners</h4>
+                <p>
+                  While JavaScript is very popular, niche programming languages
+                  such as Go and Ruby may offer a higher salary but require more
+                  experience.
                 </p>
               </div>
             </div>
