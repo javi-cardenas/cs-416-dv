@@ -7,7 +7,7 @@ import {
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-  const scenes = ["#scene-1", "#scene-2", "#scene-3", "#scene-4"];
+  const scenes = ["#scene-0", "#scene-1", "#scene-2", "#scene-3", "#scene-4"];
   let currentScene = 0;
 
   // Load and process data
@@ -57,23 +57,43 @@ async function init() {
       }
     });
 
+    // Add event listeners for dot navigation
+    const dots = document.querySelectorAll(".dot");
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        if (index !== currentScene) {
+          d3.select(scenes[currentScene]).classed("active", false);
+          currentScene = index;
+          d3.select(scenes[currentScene]).classed("active", true);
+          updateSceneIndicator(currentScene);
+          updateChartForScene(currentScene);
+          updateNavigationButtons(currentScene, scenes.length);
+        }
+      });
+    });
+
     function updateChartForScene(sceneIndex) {
       if (sceneIndex === 0) {
-        createLanguageChart(languageData);
+        // Scene 0 is the introduction - no chart needed
+        return;
       } else if (sceneIndex === 1) {
-        createCompensationChart(compensationData);
+        createLanguageChart(languageData);
       } else if (sceneIndex === 2) {
+        createCompensationChart(compensationData);
+      } else if (sceneIndex === 3) {
         // Initialize with overall AI adoption percentages
         updateAIAdoptionChart(null, rawData);
-      } else if (sceneIndex === 3) {
+      } else if (sceneIndex === 4) {
         createLanguageAIChart(languageAIData);
       }
     }
 
     function updateSceneIndicator(sceneIndex) {
-      document.getElementById("scene-indicator").textContent = `Scene ${
-        sceneIndex + 1
-      } of ${scenes.length}`;
+      // Update dot indicators
+      const dots = document.querySelectorAll(".dot");
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === sceneIndex);
+      });
     }
 
     function updateNavigationButtons(sceneIndex, totalScenes) {
@@ -191,17 +211,17 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     .select("#ai-adoption-chart")
     .insert("div", ":first-child")
     .attr("id", "ai-stats-display")
-    .style("background", "#f8f9fa")
+    .style("background", "#313244") // Catppuccin surface0
     .style("padding", "15px")
     .style("border-radius", "8px")
     .style("margin-bottom", "20px")
-    .style("border", "1px solid #dee2e6");
+    .style("border", "1px solid #45475a"); // Catppuccin surface1
 
   // Add title
   statsContainer
     .append("h3")
     .style("margin", "0 0 10px 0")
-    .style("color", "#495057")
+    .style("color", "#cdd6f4") // Catppuccin text
     .text("AI Tool Adoption Survey Results");
 
   // Add overall percentages
@@ -228,7 +248,7 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     statItem
       .append("div")
       .style("font-size", "14px")
-      .style("color", "#6c757d")
+      .style("color", "#a6adc8") // Catppuccin subtext0
       .style("max-width", "150px")
       .style("margin", "0 auto")
       .text(`${data.category} (${data.count.toLocaleString()} developers)`);
@@ -240,9 +260,9 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     .style("text-align", "center")
     .style("margin-top", "15px")
     .style("padding-top", "15px")
-    .style("border-top", "1px solid #dee2e6")
+    .style("border-top", "1px solid #45475a") // Catppuccin surface1
     .style("font-size", "14px")
-    .style("color", "#6c757d")
+    .style("color", "#a6adc8") // Catppuccin subtext0
     .text(
       `Total survey responses: ${totalResponses.toLocaleString()} developers`
     );
@@ -251,13 +271,13 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
 function getColorForCategory(category) {
   switch (category) {
     case "Yes":
-      return "#2E8B57"; // Green for current users
+      return "#a6e3a1"; // Catppuccin green for current users
     case "No, but I plan to":
-      return "#FF8C00"; // Orange for those planning to use
+      return "#fab387"; // Catppuccin peach for those planning to use
     case "No, and I don't plan to":
-      return "#DC3545"; // Red for those not planning to use
+      return "#f38ba8"; // Catppuccin red for those not planning to use
     default:
-      return "#6c757d"; // Default gray
+      return "#a6adc8"; // Catppuccin subtext0
   }
 }
 
@@ -423,7 +443,7 @@ function createLanguageAIChart(data) {
     xField: "language",
     stackFields: ["yes", "planning", "notPlanning"],
     stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#2E8B57", "#FF8C00", "#DC3545"], // Green, Orange, Red
+    colors: ["#a6e3a1", "#fab387", "#f38ba8"], // Catppuccin green, peach, red
     xAxisLabel: "Programming Language",
     yAxisLabel: "Number of Developers",
     rotateXLabels: true,
@@ -444,7 +464,7 @@ function createLanguageChart(data) {
     xAxisLabel: "Programming Language",
     yAxisLabel: "Responses (%)",
     rotateXLabels: true,
-    color: "#4A90E2",
+    color: "#89b4fa", // Catppuccin blue
     width: 900,
     height: Math.max(500, data.length * 25 + 200), // Dynamic height based on number of languages
     margin: { top: 40, right: 30, bottom: 120, left: 60 }, // Increased top margin for percentage labels

@@ -82,7 +82,7 @@ function createBarChart(containerId, data, options = {}) {
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .style("font-weight", "bold")
-      .style("fill", "#333")
+      .style("fill", "#cdd6f4") // Catppuccin text
       .text((d) => d.percentage + "%");
   }
 
@@ -256,7 +256,7 @@ function createScatterPlot(containerId, data, options = {}) {
       )
       .style("font-size", "10px") // Slightly smaller to fit more labels
       .style("font-weight", "500")
-      .style("fill", "#333")
+      .style("fill", "#cdd6f4") // Catppuccin text
       .style("text-anchor", "start")
       .style("pointer-events", "none") // Prevent interfering with dot interactions
       .style("opacity", 0.9) // Slightly transparent to reduce visual clutter
@@ -296,7 +296,7 @@ function createStackedBarChart(containerId, data, options = {}) {
     xField: "language",
     stackFields: ["yes", "planning", "notPlanning"],
     stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#2E8B57", "#FF8C00", "#DC3545"], // Green, Orange, Red
+    colors: ["#a6e3a1", "#fab387", "#f38ba8"], // Catppuccin green, peach, red
     xAxisLabel: "",
     yAxisLabel: "",
     rotateXLabels: true,

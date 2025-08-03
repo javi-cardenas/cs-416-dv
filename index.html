@@ -8,21 +8,62 @@
   </head>
 
   <body>
-    <header>
-      <h1>A Data-Driven Story of Modern Software Development</h1>
-      <p class="subtitle">Stack Overflow Developer Survey 2024</p>
-    </header>
-
     <main>
-      <!-- Navigation -->
-      <nav class="scene-navigation">
-        <button id="previous" disabled>← Previous</button>
-        <span id="scene-indicator">Scene 1 of 4</span>
-        <button id="next">Next →</button>
-      </nav>
+      <!-- Scene 0: Project Introduction -->
+      <section id="scene-0" class="scene active">
+        <div class="scene-content">
+          <h1>A Data-Driven Story of Modern Software Development</h1>
+          <p class="subtitle">Stack Overflow Developer Survey 2024</p>
+
+          <div class="project-overview">
+            <h2>Overview</h2>
+            <p>
+              This interactive visualization follows a slideshow narrative
+              structure to guide you through a focused story about modern
+              software development trends, gathered from the 2024 Stack Overflow
+              Developer Survey. This webpage was created primarily using
+              <a href="https://d3js.org/">D3.js</a>.
+            </p>
+
+            <h3>What You'll Discover</h3>
+            <ul>
+              <li>
+                <strong>Programming Language Popularity:</strong> Explore the
+                most widely adopted languages among developers worldwide
+              </li>
+              <li>
+                <strong>Compensation Trends:</strong> Understand how experience
+                and language choice impact developer earnings
+              </li>
+              <li>
+                <strong>AI Tool Adoption:</strong> Investigate how developers
+                are embracing AI tools in their workflow
+              </li>
+              <li>
+                <strong>Language-Specific AI Patterns:</strong> Discover which
+                programming communities are most enthusiastic about AI adoption
+              </li>
+            </ul>
+
+            <h3>The Data</h3>
+            <p>
+              This analysis draws from responses from over 65,000 developers
+              worldwide, technology preferences, compensation, and AI tool
+              adoption.
+            </p>
+
+            <div class="navigation-hint">
+              <p>
+                <strong>Ready to explore?</strong> Use the navigation buttons to
+                move through the data-driven story.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Scene 1: Programming Language Popularity -->
-      <section id="scene-1" class="scene active">
+      <section id="scene-1" class="scene">
         <div class="scene-content">
           <h2>Popularity of Programming Languages</h2>
           <p>
@@ -77,6 +118,21 @@
         </div>
       </section>
     </main>
+
+    <!-- Navigation -->
+    <nav class="scene-navigation">
+      <div class="nav-buttons">
+        <button id="previous" disabled>&lt;</button>
+        <button id="next">&gt;</button>
+      </div>
+      <div class="scene-dots">
+        <span class="dot active" data-scene="0"></span>
+        <span class="dot" data-scene="1"></span>
+        <span class="dot" data-scene="2"></span>
+        <span class="dot" data-scene="3"></span>
+        <span class="dot" data-scene="4"></span>
+      </div>
+    </nav>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.0.0/d3-annotation.min.js"></script>
