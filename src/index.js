@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", init);
 
 /**
  * Main initialization function for the data visualization application
+ * Loads data, processes it for different visualizations, and sets up the interface
+ * @returns {Promise<void>} Promise that resolves when initialization is complete
  */
 async function init() {
   const scenes = ["#scene-0", "#scene-1", "#scene-2", "#scene-3", "#scene-4"];
@@ -20,7 +22,6 @@ async function init() {
   try {
     const rawData = await loadSurveyData();
 
-    // Process data for different visualizations
     const languageData = processLanguageDataWithPercentages(rawData);
     const compensationData = processCompensationDataWithLanguages(rawData);
     const languageAIData = processLanguageAIAdoptionData(rawData, languageData);
@@ -51,11 +52,11 @@ async function init() {
       } else if (sceneIndex === 1) {
         createLanguageChart(languageData);
       } else if (sceneIndex === 2) {
-        createCompensationChart(compensationData);
-      } else if (sceneIndex === 3) {
         updateAIAdoptionChart(null, rawData);
-      } else if (sceneIndex === 4) {
+      } else if (sceneIndex === 3) {
         createLanguageAIChart(languageAIData, rawData);
+      } else if (sceneIndex === 4) {
+        createCompensationChart(compensationData);
       }
     }
   } catch (error) {
@@ -86,7 +87,6 @@ async function loadSurveyData() {
     const allData = await response.json();
     console.log(`Loaded ${allData.length} total records from survey data`);
 
-    // Filter for valid records with all required fields
     const filteredData = allData.filter(
       (d) =>
         d.YearsCodePro !== null &&
@@ -122,17 +122,23 @@ async function loadSurveyData() {
 function updateAIAdoptionChart(selectedTool, rawData) {
   console.log("Updating AI adoption chart for:", selectedTool);
   const totalResponses = rawData.length;
-  const aiCategories = { Yes: 0, No: 0 };
+  const aiCategories = {
+    Yes: 0,
+    No: 0,
+    "No, but I plan to soon": 0,
+    "No, and I don't plan to": 0,
+  };
 
   rawData.forEach((d) => {
     if (d.AISelect) {
       const response = d.AISelect.trim();
       if (response === "Yes") {
         aiCategories["Yes"]++;
-      } else if (
-        response === "No, but I plan to soon" ||
-        response === "No, and I don't plan to"
-      ) {
+      } else if (response === "No, but I plan to soon") {
+        aiCategories["No, but I plan to soon"]++;
+        aiCategories["No"]++;
+      } else if (response === "No, and I don't plan to") {
+        aiCategories["No, and I don't plan to"]++;
         aiCategories["No"]++;
       }
     }
@@ -140,13 +146,41 @@ function updateAIAdoptionChart(selectedTool, rawData) {
 
   // Create ordered categories for display
   const categoryOrder = ["Yes", "No"];
-  const overallPercentages = categoryOrder.map((category) => ({
-    category,
-    count: aiCategories[category] || 0,
-    percentage: parseFloat(
-      (((aiCategories[category] || 0) / totalResponses) * 100).toFixed(1)
-    ),
-  }));
+  const overallPercentages = categoryOrder.map((category) => {
+    const data = {
+      category,
+      count: aiCategories[category] || 0,
+      percentage: parseFloat(
+        (((aiCategories[category] || 0) / totalResponses) * 100).toFixed(1)
+      ),
+    };
+
+    if (category === "No") {
+      data.breakdown = {
+        "No, but I plan to soon": {
+          count: aiCategories["No, but I plan to soon"],
+          percentage: parseFloat(
+            (
+              ((aiCategories["No, but I plan to soon"] || 0) / totalResponses) *
+              100
+            ).toFixed(1)
+          ),
+        },
+        "No, and I don't plan to": {
+          count: aiCategories["No, and I don't plan to"],
+          percentage: parseFloat(
+            (
+              ((aiCategories["No, and I don't plan to"] || 0) /
+                totalResponses) *
+              100
+            ).toFixed(1)
+          ),
+        },
+      };
+    }
+
+    return data;
+  });
 
   createBarChart("#ai-adoption-chart", overallPercentages, {
     xField: "category",
@@ -155,77 +189,84 @@ function updateAIAdoptionChart(selectedTool, rawData) {
     yAxisLabel: "Percentage of All Developers (%)",
     rotateXLabels: false,
     colorFunction: (d) => getColorForCategory(d.category),
-    width: 900,
-    height: 400,
-    margin: { top: 20, right: 30, bottom: 80, left: 60 },
+    width: 800,
+    height: 500,
+    margin: { top: 30, right: 40, bottom: 100, left: 80 },
   });
 
   updateAIStatsDisplay(overallPercentages, totalResponses);
 }
 
 /**
- * Creates and displays AI adoption statistics
+ * Creates and displays AI adoption statistics in the sidebar
  * @param {Array<Object>} overallPercentages - Array of AI adoption data by category
  * @param {number} totalResponses - Total number of survey responses
  */
 function updateAIStatsDisplay(overallPercentages, totalResponses) {
-  d3.select("#ai-stats-display").remove();
+  d3.select("#ai-stats-display").selectAll("*").remove();
 
-  const statsContainer = d3
-    .select("#ai-adoption-chart")
-    .insert("div", ":first-child")
-    .attr("id", "ai-stats-display")
-    .style("background", "#ccd0da")
-    .style("padding", "15px")
-    .style("border-radius", "8px")
-    .style("margin-bottom", "20px")
-    .style("border", "1px solid #bcc0cc");
-  statsContainer
-    .append("h3")
-    .style("margin", "0 0 10px 0")
-    .style("color", "#4c4f69")
-    .text("AI Tool Adoption Survey Results");
+  const statsContainer = d3.select("#ai-stats-display");
 
   const overallStats = statsContainer
     .append("div")
     .style("display", "flex")
-    .style("justify-content", "space-around")
-    .style("margin-bottom", "10px");
+    .style("flex-direction", "column")
+    .style("gap", "15px");
 
   overallPercentages.forEach((data) => {
     const statItem = overallStats
       .append("div")
+      .style("background", "rgba(255, 255, 255, 0.7)")
+      .style("border-radius", "8px")
+      .style("padding", "12px")
       .style("text-align", "center")
-      .style("padding", "10px")
-      .style("flex", "1");
+      .style("border-left", `4px solid ${getColorForCategory(data.category)}`);
 
     statItem
       .append("div")
-      .style("font-size", "24px")
+      .style("font-size", "20px")
       .style("font-weight", "bold")
       .style("color", getColorForCategory(data.category))
+      .style("margin-bottom", "4px")
       .text(`${data.percentage}%`);
 
     statItem
       .append("div")
-      .style("font-size", "14px")
+      .style("font-size", "13px")
+      .style("color", "#4c4f69")
+      .style("font-weight", "600")
+      .style("margin-bottom", "2px")
+      .text(data.category);
+
+    statItem
+      .append("div")
+      .style("font-size", "12px")
       .style("color", "#6c6f85")
-      .style("max-width", "150px")
-      .style("margin", "0 auto")
-      .text(`${data.category} (${data.count.toLocaleString()} developers)`);
+      .text(`${data.count.toLocaleString()} developers`);
   });
 
   statsContainer
     .append("div")
     .style("text-align", "center")
     .style("margin-top", "15px")
-    .style("padding-top", "15px")
+    .style("padding-top", "12px")
     .style("border-top", "1px solid #bcc0cc")
-    .style("font-size", "14px")
+    .style("font-size", "12px")
     .style("color", "#6c6f85")
-    .text(
-      `Total survey responses: ${totalResponses.toLocaleString()} developers`
-    );
+    .style("font-style", "italic")
+    .text(`Total: ${totalResponses.toLocaleString()} developers`);
+
+  d3.select("#ai-yes-description").text(
+    `${
+      overallPercentages.find((d) => d.category === "Yes")?.percentage
+    }% of developers actively use AI tools in their workflow.`
+  );
+
+  d3.select("#ai-no-description").text(
+    `${
+      overallPercentages.find((d) => d.category === "No")?.percentage
+    }% of developers are not currently using AI tools.`
+  );
 }
 
 /**
@@ -426,7 +467,7 @@ function processCompensationDataWithLanguages(data) {
 }
 
 /**
- * Creates stacked bar chart showing AI adoption by programming language
+ * Creates stacked bar chart showing AI adoption rates by programming language
  * @param {Array<Object>} data - Processed language-AI adoption data
  * @param {Array<Object>} rawData - Raw survey data for calculating overall averages
  */
@@ -434,7 +475,6 @@ function createLanguageAIChart(data, rawData) {
   console.log("Creating language AI adoption stacked bar chart...");
   console.log(`Showing ${data.length} languages with AI adoption data`);
 
-  // Calculate overall averages from Scene 3 data
   const totalResponses = rawData.length;
   const overallYes = rawData.filter(
     (d) => d.AISelect && d.AISelect.trim() === "Yes"
@@ -475,11 +515,13 @@ function createLanguageAIChart(data, rawData) {
     height: 600,
     margin: { top: 40, right: 180, bottom: 120, left: 80 },
   });
+
+  updateLanguageStatsDisplay(data, avgYesPercentage);
 }
 
 /**
- * Creates bar chart showing programming language popularity
- * @param {Array<Object>} data - Processed language popularity data
+ * Creates bar chart displaying programming language popularity percentages
+ * @param {Array<Object>} data - Processed language popularity data with percentages
  */
 function createLanguageChart(data) {
   console.log("Creating language percentage chart...");
@@ -498,8 +540,8 @@ function createLanguageChart(data) {
 }
 
 /**
- * Creates scatter plot showing compensation vs experience by programming language
- * @param {Array<Object>} data - Original compensation data
+ * Creates interactive scatter plot showing compensation versus experience by programming language
+ * @param {Array<Object>} data - Original compensation data for all languages
  * @param {Array<Object>|null} [filteredData=null] - Filtered data to display (if null, uses original data)
  */
 export function createCompensationChart(data, filteredData = null) {
@@ -524,4 +566,21 @@ export function createCompensationChart(data, filteredData = null) {
     height: 500,
     margin: { top: 40, right: 120, bottom: 60, left: 80 },
   });
+}
+
+/**
+ * Updates the language AI adoption statistics display in the sidebar
+ * @param {Array<Object>} data - Language AI adoption data with percentages
+ * @param {number} avgYesPercentage - Overall average AI adoption percentage
+ */
+function updateLanguageStatsDisplay(data, avgYesPercentage) {
+  d3.select("#languages-count").text(data.length);
+  d3.select("#avg-adoption").text(`${avgYesPercentage.toFixed(1)}%`);
+
+  const highAdoptionLanguages = data.filter(
+    (d) => d.yesPercentage > avgYesPercentage
+  );
+  const lowAdoptionLanguages = data.filter(
+    (d) => d.yesPercentage < avgYesPercentage
+  );
 }

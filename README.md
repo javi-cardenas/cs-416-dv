@@ -4,24 +4,26 @@ This project is an interactive narrative visualization designed to illustrate ke
 
 ## Overview
 
-The visualization consists of three main scenes:
+The visualization consists of five main scenes:
 
-1. **Developer Compensation by Experience:** This scene explores the relationship between years of professional coding experience and annual compensation, revealing earning patterns across the global developer community.
-2. **Popular Programming Languages Worldwide:** This scene focuses on the most widely used programming languages, displaying the top 10 languages by developer adoption.
-3. **AI Tool Adoption Interactive Analysis:** This interactive scene allows users to explore how developers are adopting AI tools in their workflow, with the ability to filter by specific tools and see adoption patterns across experience levels.
+0. **Project Introduction:** Welcome screen introducing the data story and key questions to be explored.
+1. **Programming Language Popularity:** Explores the most widely used programming languages among developers worldwide.
+2. **AI Adoption:** Investigates how developers are embracing AI tools in their workflow with overall adoption statistics.
+3. **Language-Specific AI Patterns:** Discovers which programming communities are most enthusiastic about AI adoption through detailed breakdowns by language.
+4. **Compensation Trends:** Analyzes how experience levels and language choice impact developer earnings through an interactive scatter plot.
 
 ## Narrative Visualization Techniques
 
 ### 1. Messaging
 
-The primary message of this visualization is to convey the current state of the software development industry through three key lenses: compensation trends, technology preferences, and AI adoption. It tells the story of how experience translates to earnings, which technologies dominate the field, and how modern developers are embracing AI tools.
+The primary message of this visualization is to convey the current state of the software development industry through four key lenses: programming language popularity, AI adoption patterns, language-specific AI trends, and compensation dynamics. It tells the story of which technologies dominate the field, how modern developers are embracing AI tools across different programming communities, and how experience and language choice impact earnings.
 
 ### 2. Narrative Structure
 
-This project follows the **Martini glass** narrative structure:
+This project follows the **Slideshow** narrative structure:
 
-- **Guided Narrative:** The first two scenes present a guided story, leading the viewer through key insights about developer compensation and language popularity with minimal interaction.
-- **Exploration:** The final scene allows users to explore AI adoption data more deeply, selecting specific tools to view detailed adoption patterns.
+- **Guided Narrative:** The first four scenes present a progressive story, leading the viewer through key insights about programming language popularity, AI adoption trends, and language-specific patterns.
+- **Interactive Exploration:** The final scene allows users to explore compensation data through an interactive scatter plot with filtering capabilities for deeper analysis.
 
 ### 3. Visual Structure
 
@@ -33,11 +35,13 @@ Each scene maintains a consistent visual structure for clarity:
 
 ### 4. Scenes
 
-The visualization is divided into three scenes:
+The visualization is divided into five scenes:
 
-- **Scene 1:** A scatter plot showing the relationship between years of experience and annual compensation, with color coding by country.
-- **Scene 2:** A bar chart displaying the top 10 most popular programming languages among developers.
-- **Scene 3:** An interactive bar chart showing AI tool adoption patterns, filterable by specific AI tools.
+- **Scene 0:** Introduction and overview of the data story.
+- **Scene 1:** A bar chart displaying the most popular programming languages among developers.
+- **Scene 2:** A bar chart showing overall AI adoption patterns with detailed statistics.
+- **Scene 3:** A stacked bar chart revealing AI adoption rates by programming language, sorted by adoption percentage.
+- **Scene 4:** An interactive scatter plot showing the relationship between years of experience and annual compensation, with filtering capabilities.
 
 ### 5. Annotations
 
@@ -51,18 +55,18 @@ Interactive elements enhance data exploration:
 
 The key parameters include:
 
-- **Current Scene:** Tracks the currently displayed scene (1 of 3).
-- **Selected AI Tool:** Determines which AI tool's adoption data is shown in the third scene.
-- **Data Sample:** Random sampling of 1000 records for optimal performance.
-- **Experience Range:** Filters developers with 0-30 years of experience for meaningful analysis.
+- **Current Scene:** Tracks the currently displayed scene (0 of 4).
+- **Compensation Filters:** Experience range and minimum response thresholds for Scene 4 analysis.
+- **Data Sample:** Optimized data loading and processing for performance.
+- **Language Selection:** Top programming languages with sufficient sample sizes for meaningful analysis.
 
 ### 7. Triggers
 
 User interactions drive changes in the visualization:
 
 - **Next/Previous Buttons:** Navigate between scenes with proper state management.
-- **AI Tool Dropdown:** Filters data for the selected AI tool in the third scene.
-- **Hover Interactions:** Reveal detailed information through tooltips.
+- **Compensation Filters:** Interactive sliders and controls for exploring salary data in Scene 4.
+- **Hover Interactions:** Reveal detailed information through tooltips across all chart types.
 
 ## Technical Implementation
 
@@ -108,24 +112,23 @@ User interactions drive changes in the visualization:
 
 ### Interacting with the Visualization
 
-- **Scene Navigation:** Use the "Previous" and "Next" buttons to move through the three scenes.
-- **AI Tool Exploration:** In Scene 3, select different AI tools from the dropdown to see adoption patterns.
-- **Data Details:** Hover over chart elements to see detailed information in tooltips.
+- **Scene Navigation:** Use the "Previous" and "Next" buttons to move through the five scenes.
+- **Compensation Analysis:** In Scene 4, use the filter controls to explore salary patterns by experience and response thresholds.
+- **Data Details:** Hover over chart elements to see detailed information in tooltips, including AI adoption breakdowns and compensation statistics.
 
 ## Project Structure
 
 ```
 cs-416-dv/
 ├── index.html                    # Main HTML file
+├── style.css                     # Styling and responsive design
 ├── data/
 │   └── project-dataset/
 │       └── data.json            # Processed Stack Overflow survey data
 ├── src/
-│   ├── js/
-│   │   ├── index.js            # Main application logic
-│   │   └── utils.js            # Reusable D3.js chart functions
-│   └── css/
-│       └── style.css           # Styling and responsive design
+│   ├── index.js                 # Main application logic
+│   └── components/
+│       └── charts.js            # Reusable D3.js chart functions
 └── README.md                   # Project documentation
 ```
 
@@ -147,11 +150,13 @@ The visualization uses data from the **Stack Overflow Developer Survey 2024**, w
 
 ## Key Insights Revealed
 
-1. **Experience-Compensation Correlation:** Clear positive relationship between years of experience and annual compensation, with regional variations.
+1. **Programming Language Popularity:** JavaScript, Python, and TypeScript dominate as the most widely used languages among developers worldwide.
 
-2. **Language Dominance:** JavaScript, Python, and Java continue to lead as the most popular programming languages.
+2. **AI Adoption Patterns:** Significant portion of developers are embracing AI tools, with clear distinctions between those actively using AI and those planning to adopt.
 
-3. **AI Adoption Trends:** Varying adoption patterns of AI tools across different experience levels, showing the evolving landscape of developer productivity tools.
+3. **Language-Specific AI Trends:** Certain programming communities show higher enthusiasm for AI adoption, with modern languages like Dart and TypeScript leading adoption rates.
+
+4. **Compensation Dynamics:** Clear positive relationship between years of experience and annual compensation, with language choice also impacting earning potential.
 
 ## Future Enhancements
 
@@ -172,4 +177,4 @@ This project is licensed under the MIT License.
 
 ---
 
-This interactive narrative visualization provides a comprehensive exploration of the modern software development landscape through the lens of the Stack Overflow Developer Survey 2024, revealing key trends in compensation, technology adoption, and emerging AI integration in developer workflows.
+This interactive narrative visualization provides a comprehensive exploration of the modern software development landscape through the lens of the Stack Overflow Developer Survey 2024, revealing key trends in programming language popularity, AI adoption patterns across different communities, and the relationship between technology choices and compensation in developer workflows.

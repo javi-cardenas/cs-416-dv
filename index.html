@@ -28,28 +28,28 @@
             <h3>What You'll Discover</h3>
             <ul>
               <li>
-                <strong>Programming Language Popularity:</strong> Explore the
-                most widely adopted languages among developers worldwide
+                <strong>Programming Language Popularity:</strong> What are the
+                most widely used languages among developers worldwide?
               </li>
               <li>
-                <strong>Compensation Trends:</strong> Understand how experience
-                and language choice impact developer earnings
+                <strong>AI Adoption:</strong> How are developers embracing AI
+                tools in their workflow?
               </li>
               <li>
-                <strong>AI Tool Adoption:</strong> Investigate how developers
-                are embracing AI tools in their workflow
+                <strong>Language-Specific AI Patterns:</strong> Which
+                programming communities are most enthusiastic about AI adoption?
               </li>
               <li>
-                <strong>Language-Specific AI Patterns:</strong> Discover which
-                programming communities are most enthusiastic about AI adoption
+                <strong>Compensation Trends:</strong> How do experience levels
+                and language impact developer earnings?
               </li>
             </ul>
 
             <h3>The Data</h3>
             <p>
               This analysis draws from about 30,000 responses from developers
-              worldwide on technology preferences, compensation, and AI
-              adoption.
+              worldwide on technology preferences, AI adoption, and
+              compensation.
             </p>
 
             <div class="navigation-hint">
@@ -70,8 +70,63 @@
         </div>
       </section>
 
-      <!-- Scene 2: Impact on Compensation -->
+      <!-- Scene 2: AI Tool Adoption Interactive Analysis -->
       <section id="scene-2" class="scene">
+        <div class="scene-content ai-layout">
+          <div class="ai-main">
+            <h2>Developer AI Adoption</h2>
+            <div id="ai-adoption-chart" class="chart-container"></div>
+          </div>
+
+          <div class="ai-sidebar">
+            <div class="info-box ai-yes">
+              <h4>AI Adopters</h4>
+              <p id="ai-yes-description">
+                Developers actively using AI tools in their workflow.
+              </p>
+            </div>
+
+            <div class="info-box ai-no">
+              <h4>Non-Adopters</h4>
+              <p id="ai-no-description">
+                Developers not currently using AI tools, including those
+                planning to adopt.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scene 3: AI Adoption by Programming Language -->
+      <section id="scene-3" class="scene">
+        <div class="scene-content language-ai-layout">
+          <div class="language-ai-main">
+            <h2>AI Adoption by Programming Language</h2>
+            <div id="language-ai-chart" class="chart-container"></div>
+          </div>
+
+          <div class="language-ai-sidebar">
+            <div class="info-box language-high-adoption">
+              <h4>High Adoption Languages</h4>
+              <p id="high-adoption-description">
+                Developers using programming languages such as Dart and
+                Typescript show above average AI tool adoption rates.
+              </p>
+            </div>
+
+            <div class="info-box language-low-adoption">
+              <h4>Lower Adoption Languages</h4>
+              <p id="low-adoption-description">
+                Developers using programming languages such as C and C++ show
+                below average AI tool adoption rates.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scene 4: Impact on Compensation -->
+      <section id="scene-4" class="scene">
         <div class="scene-content compensation-layout">
           <div class="compensation-main">
             <h2>Impact on Compensation</h2>
@@ -82,16 +137,16 @@
             <div class="info-box entry-level">
               <h4>Entry Level</h4>
               <p>
-                Programming languages such as R, Rust, and Python are more
-                favored by early career developers.
+                Programming languages such as Rust and Python are more favored
+                by early career developers.
               </p>
             </div>
 
             <div class="info-box high-earners">
               <h4>High Earners</h4>
               <p>
-                While JavaScript is very popular, niche programming languages
-                such as Go and Ruby may offer a higher salary but require more
+                While JavaScript is very popular, certain programming languages
+                such as Ruby may offer a higher salary but require more
                 experience.
               </p>
             </div>
@@ -129,22 +184,6 @@
               </button>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- Scene 3: AI Tool Adoption Interactive Analysis -->
-      <section id="scene-3" class="scene">
-        <div class="scene-content">
-          <h2>Developer AI Adoption</h2>
-          <div id="ai-adoption-chart" class="chart-container"></div>
-        </div>
-      </section>
-
-      <!-- Scene 4: AI Adoption by Programming Language -->
-      <section id="scene-4" class="scene">
-        <div class="scene-content">
-          <h2>AI Adoption by Programming Language</h2>
-          <div id="language-ai-chart" class="chart-container"></div>
         </div>
       </section>
     </main>

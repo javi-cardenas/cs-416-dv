@@ -73,6 +73,19 @@ function createBarChart(containerId, data, options = {}) {
   // Y-axis
   g.append("g").call(d3.axisLeft(y));
 
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "bar-tooltip")
+    .style("position", "absolute")
+    .style("padding", "10px")
+    .style("background", "rgba(239, 241, 245, 0.95)")
+    .style("color", "#4c4f69")
+    .style("border-radius", "5px")
+    .style("pointer-events", "none")
+    .style("opacity", 0)
+    .style("border", "1px solid #bcc0cc");
+
   g.selectAll(".bar")
     .data(data)
     .enter()
@@ -84,7 +97,40 @@ function createBarChart(containerId, data, options = {}) {
     .attr("height", (d) => height - y(d[config.yField]))
     .attr("fill", (d) =>
       config.colorFunction ? config.colorFunction(d) : config.color
-    );
+    )
+    .on("mouseover", function (event, d) {
+      let tooltipContent = "";
+
+      if (d.breakdown) {
+        tooltipContent = `<strong>${d.category}</strong><br/>`;
+        tooltipContent += `Total: ${d.count.toLocaleString()} developers (${
+          d.percentage
+        }%)<br/><br/>`;
+        tooltipContent += `<strong>Breakdown:</strong><br/>`;
+
+        Object.entries(d.breakdown).forEach(([subcategory, data]) => {
+          tooltipContent += `${subcategory}: ${data.count.toLocaleString()} developers (${
+            data.percentage
+          }%)<br/>`;
+        });
+      } else if (d.count !== undefined && d.percentage !== undefined) {
+        const fieldName = d[config.xField];
+        tooltipContent = `<strong>${fieldName}</strong><br/>`;
+        tooltipContent += `${d.percentage}% of developers<br/>`;
+        tooltipContent += `${d.count.toLocaleString()} responses`;
+      }
+
+      if (tooltipContent) {
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip
+          .html(tooltipContent)
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY - 28 + "px");
+      }
+    })
+    .on("mouseout", function () {
+      tooltip.transition().duration(500).style("opacity", 0);
+    });
 
   // Add percentage labels on bars
   if (data.length > 0 && data[0].hasOwnProperty("percentage")) {
@@ -231,7 +277,6 @@ function createScatterPlot(containerId, data, options = {}) {
   // Y-axis
   g.append("g").call(d3.axisLeft(y));
 
-  // Tooltip
   let tooltip = null;
   if (config.showTooltip) {
     tooltip = d3
@@ -264,13 +309,37 @@ function createScatterPlot(containerId, data, options = {}) {
     .attr("opacity", 0.7)
     .on("mouseover", function (event, d) {
       if (tooltip) {
+        let tooltipContent = "";
+
+        if (config.colorField && d[config.colorField]) {
+          tooltipContent += `<strong>${d[config.colorField]}</strong><br/>`;
+        }
+
+        if (config.xField === "avgExperience") {
+          tooltipContent += `Avg. Experience: ${d[config.xField].toFixed(
+            2
+          )} years<br/>`;
+        } else {
+          tooltipContent += `${config.xField}: ${d[config.xField]}<br/>`;
+        }
+
+        if (config.yField === "medianCompensation") {
+          tooltipContent += `Median Compensation: $${d[
+            config.yField
+          ].toLocaleString()}`;
+        } else {
+          tooltipContent += `${config.yField}: ${d[config.yField]}`;
+        }
+
+        if (config.radiusField && d[config.radiusField]) {
+          tooltipContent += `<br/><em>Responses: ${d[
+            config.radiusField
+          ].toLocaleString()}</em>`;
+        }
+
         tooltip.transition().duration(200).style("opacity", 0.9);
         tooltip
-          .html(
-            `${config.xField}: ${d[config.xField]}<br/>${config.yField}: ${
-              d[config.yField]
-            }`
-          )
+          .html(tooltipContent)
           .style("left", event.pageX + 10 + "px")
           .style("top", event.pageY - 28 + "px");
       }
@@ -281,7 +350,6 @@ function createScatterPlot(containerId, data, options = {}) {
       }
     });
 
-  // Add text labels for programming languages
   if (
     config.colorField &&
     data.length > 0 &&
@@ -469,22 +537,18 @@ function createStackedBarChart(containerId, data, options = {}) {
       let percentage;
 
       if (config.usePercentageScale) {
-        // For percentage scale, the value IS the percentage
         percentage = value.toFixed(1);
       } else {
-        // For count scale, calculate percentage from total
         percentage = ((value / d.data.total) * 100).toFixed(1);
       }
 
       let tooltipContent = `<strong>${d.data[config.xField]}</strong><br/>`;
 
       if (config.usePercentageScale) {
-        // For percentage scale, show the percentage and actual count
         const actualCount = stackLabel === "Yes" ? d.data.yes : d.data.no;
         tooltipContent += `${stackLabel}: ${percentage}% (${actualCount.toLocaleString()} developers)<br/>`;
         tooltipContent += `<em>Total developers: ${d.data.total.toLocaleString()}</em>`;
       } else {
-        // For count scale, show count and percentage
         tooltipContent += `${stackLabel}: ${value.toLocaleString()} developers (${percentage}%)`;
       }
 
@@ -513,7 +577,6 @@ function createStackedBarChart(containerId, data, options = {}) {
       tooltip.transition().duration(500).style("opacity", 0);
     });
 
-  // Add percentage labels if enabled
   if (config.showPercentageLabels) {
     layers.each(function (layerData, layerIndex) {
       d3.select(this)
@@ -538,19 +601,16 @@ function createStackedBarChart(containerId, data, options = {}) {
           let percentage;
 
           if (config.usePercentageScale) {
-            // For percentage scale, the value IS the percentage
             percentage = value;
           } else {
-            // For count scale, calculate percentage from total
             percentage = (value / d.data.total) * 100;
           }
 
-          return percentage >= 5 ? `${percentage.toFixed(1)}%` : ""; // Only show if >= 5%
+          return percentage >= 5 ? `${percentage.toFixed(1)}%` : "";
         });
     });
   }
 
-  // Add legend if enabled
   if (config.showLegend) {
     const legend = svg
       .append("g")
