@@ -6,6 +6,8 @@ import {
 import { initializeCompensationFilters } from "./components/filter.js";
 import { initializeNavigation } from "./components/nav.js";
 
+const MAX_LANGUAGES = 30; // Adjust this to change how many languages are displayed
+
 document.addEventListener("DOMContentLoaded", init);
 
 /**
@@ -246,7 +248,9 @@ function getColorForCategory(category) {
  * @returns {Array<Object>} Processed data for language-AI adoption visualization
  */
 function processLanguageAIAdoptionData(rawData, languageData) {
-  const topLanguages = languageData.slice(0, 15);
+  const topLanguages = MAX_LANGUAGES
+    ? languageData.slice(0, MAX_LANGUAGES)
+    : languageData;
   const languageAIStats = {};
   topLanguages.forEach((lang) => {
     languageAIStats[lang.language] = {
@@ -327,15 +331,18 @@ function processLanguageDataWithPercentages(data) {
     }
   });
 
-  return Object.entries(languageCounts)
+  const languageResult = Object.entries(languageCounts)
     .map(([language, count]) => ({
       language,
       count,
       percentage: parseFloat(((count / totalResponses) * 100).toFixed(1)),
     }))
     .filter((lang) => lang.percentage > 1.0)
-    .sort((a, b) => b.percentage - a.percentage)
-    .slice(0, 15);
+    .sort((a, b) => b.percentage - a.percentage);
+
+  return MAX_LANGUAGES
+    ? languageResult.slice(0, MAX_LANGUAGES)
+    : languageResult;
 }
 
 /**
@@ -401,7 +408,7 @@ function processCompensationDataWithLanguages(data) {
     } total)`
   );
 
-  return Object.entries(languageStats)
+  const compensationResult = Object.entries(languageStats)
     .filter(([lang, stats]) => stats.count >= 3)
     .map(([language, stats]) => ({
       language,
@@ -410,8 +417,11 @@ function processCompensationDataWithLanguages(data) {
       medianCompensation: d3.median(stats.compensations),
       responseCount: stats.count,
     }))
-    .sort((a, b) => b.responseCount - a.responseCount)
-    .slice(0, 15);
+    .sort((a, b) => b.responseCount - a.responseCount);
+
+  return MAX_LANGUAGES
+    ? compensationResult.slice(0, MAX_LANGUAGES)
+    : compensationResult;
 }
 
 /**
@@ -451,8 +461,8 @@ function createLanguageChart(data) {
     yAxisLabel: "Responses (%)",
     rotateXLabels: true,
     color: "#89b4fa",
-    width: 900,
-    height: Math.max(500, data.length * 25 + 200),
+    width: 1200,
+    height: Math.max(450, Math.min(600, data.length * 22 + 180)),
     margin: { top: 40, right: 30, bottom: 120, left: 60 },
   });
 }
