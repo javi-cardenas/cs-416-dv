@@ -3,14 +3,18 @@ import {
   createScatterPlot,
   createStackedBarChart,
 } from "./utils.js";
+import { initializeCompensationFilters } from "./filter.js";
+import { initializeNavigation } from "./nav.js";
 
 document.addEventListener("DOMContentLoaded", init);
 
+/**
+ * Main initialization function for the data visualization application
+ */
 async function init() {
   const scenes = ["#scene-0", "#scene-1", "#scene-2", "#scene-3", "#scene-4"];
-  let currentScene = 0;
+  let currentScene = { value: 0 }; // Use object to pass by reference
 
-  // Load and process data
   try {
     const rawData = await loadSurveyData();
 
@@ -32,80 +36,28 @@ async function init() {
     );
 
     // Initial chart rendering
-    updateChartForScene(currentScene);
+    updateChartForScene(currentScene.value);
+    initializeNavigation(scenes, currentScene, updateChartForScene);
 
-    // Add event listeners to navigation buttons
-    document.getElementById("next").addEventListener("click", () => {
-      if (currentScene < scenes.length - 1) {
-        d3.select(scenes[currentScene]).classed("active", false);
-        currentScene++;
-        d3.select(scenes[currentScene]).classed("active", true);
-        updateSceneIndicator(currentScene);
-        updateChartForScene(currentScene);
-        updateNavigationButtons(currentScene, scenes.length);
-      }
-    });
-
-    document.getElementById("previous").addEventListener("click", () => {
-      if (currentScene > 0) {
-        d3.select(scenes[currentScene]).classed("active", false);
-        currentScene--;
-        d3.select(scenes[currentScene]).classed("active", true);
-        updateSceneIndicator(currentScene);
-        updateChartForScene(currentScene);
-        updateNavigationButtons(currentScene, scenes.length);
-      }
-    });
-
-    // Add event listeners for dot navigation
-    const dots = document.querySelectorAll(".nav-dot");
-    dots.forEach((dot, index) => {
-      dot.addEventListener("click", () => {
-        if (index !== currentScene) {
-          d3.select(scenes[currentScene]).classed("active", false);
-          currentScene = index;
-          d3.select(scenes[currentScene]).classed("active", true);
-          updateSceneIndicator(currentScene);
-          updateChartForScene(currentScene);
-          updateNavigationButtons(currentScene, scenes.length);
-        }
-      });
-    });
-
+    /**
+     * Updates the chart displayed based on the current scene
+     * @param {number} sceneIndex - Index of the scene to display
+     */
     function updateChartForScene(sceneIndex) {
       if (sceneIndex === 0) {
-        // Scene 0 is the introduction - no chart needed
         return;
       } else if (sceneIndex === 1) {
         createLanguageChart(languageData);
       } else if (sceneIndex === 2) {
         createCompensationChart(compensationData);
       } else if (sceneIndex === 3) {
-        // Initialize with overall AI adoption percentages
         updateAIAdoptionChart(null, rawData);
       } else if (sceneIndex === 4) {
         createLanguageAIChart(languageAIData);
       }
     }
-
-    function updateSceneIndicator(sceneIndex) {
-      // Update dot indicators
-      const dots = document.querySelectorAll(".nav-dot");
-      dots.forEach((dot, index) => {
-        dot.classList.toggle("active", index === sceneIndex);
-      });
-    }
-
-    function updateNavigationButtons(sceneIndex, totalScenes) {
-      const prevButton = document.getElementById("previous");
-      const nextButton = document.getElementById("next");
-
-      prevButton.disabled = sceneIndex === 0;
-      nextButton.disabled = sceneIndex === totalScenes - 1;
-    }
   } catch (error) {
     console.error("Failed to initialize application:", error);
-    // Display error message to user
     const errorDiv = document.createElement("div");
     errorDiv.className = "error-message";
     errorDiv.innerHTML = `
@@ -117,7 +69,11 @@ async function init() {
   }
 }
 
-// Data loading and processing functions
+/**
+ * Loads and filters Stack Overflow survey data from JSON file
+ * @returns {Promise<Array<Object>>} Promise resolving to filtered survey data
+ * @throws {Error} When data loading fails
+ */
 async function loadSurveyData() {
   try {
     console.log("Loading complete Stack Overflow survey data...");
@@ -134,8 +90,7 @@ async function loadSurveyData() {
         d.YearsCodePro !== null &&
         d.LanguageHaveWorkedWith !== null &&
         d.AISelect !== null &&
-        d.YearsCodePro !== "More than 50 years" && // Remove edge case
-        // Require either ConvertedCompYearly or CompTotal for compensation data
+        d.YearsCodePro !== "More than 50 years" &&
         ((d.ConvertedCompYearly !== null &&
           d.ConvertedCompYearly > 0 &&
           d.ConvertedCompYearly < 500000) ||
@@ -157,14 +112,13 @@ async function loadSurveyData() {
   }
 }
 
-// Data processing functions for real Stack Overflow survey data
-
-// Interactive chart update functions
-
+/**
+ * Updates the AI adoption chart with survey response data
+ * @param {string|null} selectedTool - Currently selected AI tool (unused in current implementation)
+ * @param {Array<Object>} rawData - Raw survey data
+ */
 function updateAIAdoptionChart(selectedTool, rawData) {
   console.log("Updating AI adoption chart for:", selectedTool);
-
-  // Calculate AI adoption percentages by category
   const totalResponses = rawData.length;
   const aiCategories = {};
 
@@ -187,7 +141,6 @@ function updateAIAdoptionChart(selectedTool, rawData) {
       ),
     }));
 
-  // Show overall AI adoption chart with the three categories
   createBarChart("#ai-adoption-chart", overallPercentages, {
     xField: "category",
     yField: "percentage",
@@ -200,33 +153,32 @@ function updateAIAdoptionChart(selectedTool, rawData) {
     margin: { top: 20, right: 30, bottom: 80, left: 60 },
   });
 
-  // Add overall statistics text
   updateAIStatsDisplay(overallPercentages, totalResponses);
 }
 
+/**
+ * Creates and displays AI adoption statistics
+ * @param {Array<Object>} overallPercentages - Array of AI adoption data by category
+ * @param {number} totalResponses - Total number of survey responses
+ */
 function updateAIStatsDisplay(overallPercentages, totalResponses) {
-  // Remove existing stats display
   d3.select("#ai-stats-display").remove();
 
-  // Create stats display container
   const statsContainer = d3
     .select("#ai-adoption-chart")
     .insert("div", ":first-child")
     .attr("id", "ai-stats-display")
-    .style("background", "#313244") // Catppuccin surface0
+    .style("background", "#313244")
     .style("padding", "15px")
     .style("border-radius", "8px")
     .style("margin-bottom", "20px")
-    .style("border", "1px solid #45475a"); // Catppuccin surface1
-
-  // Add title
+    .style("border", "1px solid #45475a");
   statsContainer
     .append("h3")
     .style("margin", "0 0 10px 0")
-    .style("color", "#cdd6f4") // Catppuccin text
+    .style("color", "#cdd6f4")
     .text("AI Tool Adoption Survey Results");
 
-  // Add overall percentages
   const overallStats = statsContainer
     .append("div")
     .style("display", "flex")
@@ -250,46 +202,52 @@ function updateAIStatsDisplay(overallPercentages, totalResponses) {
     statItem
       .append("div")
       .style("font-size", "14px")
-      .style("color", "#a6adc8") // Catppuccin subtext0
+      .style("color", "#a6adc8")
       .style("max-width", "150px")
       .style("margin", "0 auto")
       .text(`${data.category} (${data.count.toLocaleString()} developers)`);
   });
 
-  // Add summary information
   statsContainer
     .append("div")
     .style("text-align", "center")
     .style("margin-top", "15px")
     .style("padding-top", "15px")
-    .style("border-top", "1px solid #45475a") // Catppuccin surface1
+    .style("border-top", "1px solid #45475a")
     .style("font-size", "14px")
-    .style("color", "#a6adc8") // Catppuccin subtext0
+    .style("color", "#a6adc8")
     .text(
       `Total survey responses: ${totalResponses.toLocaleString()} developers`
     );
 }
 
+/**
+ * Returns appropriate color for AI adoption category
+ * @param {string} category - AI adoption category
+ * @returns {string} Hex color code
+ */
 function getColorForCategory(category) {
   switch (category) {
     case "Yes":
-      return "#a6e3a1"; // Catppuccin green for current users
+      return "#a6e3a1";
     case "No, but I plan to":
-      return "#fab387"; // Catppuccin peach for those planning to use
+      return "#fab387";
     case "No, and I don't plan to":
-      return "#f38ba8"; // Catppuccin red for those not planning to use
+      return "#f38ba8";
     default:
-      return "#a6adc8"; // Catppuccin subtext0
+      return "#a6adc8";
   }
 }
 
-// Process language-AI adoption data for Scene 4
+/**
+ * Processes language-specific AI adoption data for visualization
+ * @param {Array<Object>} rawData - Raw survey data
+ * @param {Array<Object>} languageData - Processed language popularity data
+ * @returns {Array<Object>} Processed data for language-AI adoption visualization
+ */
 function processLanguageAIAdoptionData(rawData, languageData) {
-  // Get the top languages from scene 1 (already filtered for >1% usage)
-  const topLanguages = languageData.slice(0, 15); // Show top 15 languages for readability
+  const topLanguages = languageData.slice(0, 15);
   const languageAIStats = {};
-
-  // Initialize counters for each language
   topLanguages.forEach((lang) => {
     languageAIStats[lang.language] = {
       yes: 0,
@@ -299,7 +257,6 @@ function processLanguageAIAdoptionData(rawData, languageData) {
     };
   });
 
-  // Count AI adoption for each language
   rawData.forEach((d) => {
     if (d.LanguageHaveWorkedWith && d.AISelect) {
       const languages = d.LanguageHaveWorkedWith.split(";");
@@ -322,7 +279,6 @@ function processLanguageAIAdoptionData(rawData, languageData) {
     }
   });
 
-  // Convert to array format needed for stacked bar chart
   return topLanguages
     .map((lang) => ({
       language: lang.language,
@@ -346,11 +302,15 @@ function processLanguageAIAdoptionData(rawData, languageData) {
         100
       ).toFixed(1),
     }))
-    .filter((lang) => lang.total >= 50) // Only include languages with at least 50 responses
-    .sort((a, b) => b.total - a.total); // Sort by total responses
+    .filter((lang) => lang.total >= 50)
+    .sort((a, b) => b.total - a.total);
 }
 
-// New data processing functions for professional visualization
+/**
+ * Processes language popularity data with usage percentages
+ * @param {Array<Object>} data - Raw survey data
+ * @returns {Array<Object>} Processed language data with percentages and counts
+ */
 function processLanguageDataWithPercentages(data) {
   const languageCounts = {};
   const totalResponses = data.length;
@@ -367,20 +327,23 @@ function processLanguageDataWithPercentages(data) {
     }
   });
 
-  // Convert to array with percentages and filter by >1% usage
   return Object.entries(languageCounts)
     .map(([language, count]) => ({
       language,
       count,
       percentage: parseFloat(((count / totalResponses) * 100).toFixed(1)),
     }))
-    .filter((lang) => lang.percentage > 1.0) // Only show languages with >1% usage
-    .sort((a, b) => b.percentage - a.percentage) // Sort by percentage descending
-    .slice(0, 15); // Show top 15 languages
+    .filter((lang) => lang.percentage > 1.0)
+    .sort((a, b) => b.percentage - a.percentage)
+    .slice(0, 15);
 }
 
+/**
+ * Processes compensation and experience data by programming language
+ * @param {Array<Object>} data - Raw survey data
+ * @returns {Array<Object>} Processed compensation data with language statistics
+ */
 function processCompensationDataWithLanguages(data) {
-  // First, get the list of languages with >1% usage from the first scene
   const languageData = processLanguageDataWithPercentages(data);
   const validLanguages = new Set(languageData.map((lang) => lang.language));
 
@@ -395,8 +358,6 @@ function processCompensationDataWithLanguages(data) {
       d.YearsCodePro !== "More than 50 years"
     ) {
       const experience = parseFloat(d.YearsCodePro);
-
-      // Use ConvertedCompYearly as default, fallback to CompTotal
       let compensation = null;
       if (d.ConvertedCompYearly && d.ConvertedCompYearly > 0) {
         compensation = parseFloat(d.ConvertedCompYearly);
@@ -417,7 +378,6 @@ function processCompensationDataWithLanguages(data) {
         const languages = d.LanguageHaveWorkedWith.split(";");
         languages.forEach((lang) => {
           const cleanLang = lang.trim();
-          // Only include languages that have >1% usage in first scene
           if (cleanLang && validLanguages.has(cleanLang)) {
             if (!languageStats[cleanLang]) {
               languageStats[cleanLang] = {
@@ -441,9 +401,8 @@ function processCompensationDataWithLanguages(data) {
     } total)`
   );
 
-  // Calculate averages and return formatted data for all valid languages
   return Object.entries(languageStats)
-    .filter(([lang, stats]) => stats.count >= 3) // Reduced minimum to 3 responses for more inclusivity
+    .filter(([lang, stats]) => stats.count >= 3)
     .map(([language, stats]) => ({
       language,
       avgExperience:
@@ -452,10 +411,13 @@ function processCompensationDataWithLanguages(data) {
       responseCount: stats.count,
     }))
     .sort((a, b) => b.responseCount - a.responseCount)
-    .slice(0, 15); // Show top 15 languages by response count
+    .slice(0, 15);
 }
 
-// Chart creation function for Scene 4
+/**
+ * Creates stacked bar chart showing AI adoption by programming language
+ * @param {Array<Object>} data - Processed language-AI adoption data
+ */
 function createLanguageAIChart(data) {
   console.log("Creating language AI adoption stacked bar chart...");
   console.log(`Showing ${data.length} languages with AI adoption data`);
@@ -464,7 +426,7 @@ function createLanguageAIChart(data) {
     xField: "language",
     stackFields: ["yes", "planning", "notPlanning"],
     stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#a6e3a1", "#fab387", "#f38ba8"], // Catppuccin green, peach, red
+    colors: ["#a6e3a1", "#fab387", "#f38ba8"],
     xAxisLabel: "Programming Language",
     yAxisLabel: "Number of Developers",
     rotateXLabels: true,
@@ -475,7 +437,10 @@ function createLanguageAIChart(data) {
   });
 }
 
-// Chart creation functions using real survey data
+/**
+ * Creates bar chart showing programming language popularity
+ * @param {Array<Object>} data - Processed language popularity data
+ */
 function createLanguageChart(data) {
   console.log("Creating language percentage chart...");
   console.log(`Showing ${data.length} languages with >1% usage`);
@@ -485,23 +450,27 @@ function createLanguageChart(data) {
     xAxisLabel: "Programming Language",
     yAxisLabel: "Responses (%)",
     rotateXLabels: true,
-    color: "#89b4fa", // Catppuccin blue
+    color: "#89b4fa",
     width: 900,
-    height: Math.max(500, data.length * 25 + 200), // Dynamic height based on number of languages
-    margin: { top: 40, right: 30, bottom: 120, left: 60 }, // Increased top margin for percentage labels
+    height: Math.max(500, data.length * 25 + 200),
+    margin: { top: 40, right: 30, bottom: 120, left: 60 },
   });
 }
 
-function createCompensationChart(data, filteredData = null) {
+/**
+ * Creates scatter plot showing compensation vs experience by programming language
+ * @param {Array<Object>} data - Original compensation data
+ * @param {Array<Object>|null} [filteredData=null] - Filtered data to display (if null, uses original data)
+ */
+export function createCompensationChart(data, filteredData = null) {
   console.log("Creating compensation bubble chart with language labels...");
   const dataToShow = filteredData || data;
   console.log(
     `Showing ${dataToShow.length} languages from scene 1 with compensation data`
   );
 
-  // Initialize filters if not already done
   if (!window.compensationFilters) {
-    initializeCompensationFilters(data);
+    initializeCompensationFilters(data, createCompensationChart);
   }
 
   createScatterPlot("#compensation-chart", dataToShow, {
@@ -511,239 +480,8 @@ function createCompensationChart(data, filteredData = null) {
     colorField: "language",
     xAxisLabel: "Average Years of Professional Coding",
     yAxisLabel: "Median Compensation ($)",
-    width: 700, // Reduced width for sidebar layout
-    height: 500, // Slightly reduced height
-    margin: { top: 40, right: 120, bottom: 60, left: 80 }, // Reduced right margin
+    width: 700,
+    height: 500,
+    margin: { top: 40, right: 120, bottom: 60, left: 80 },
   });
 }
-
-// Compensation Filters Functionality
-function initializeCompensationFilters(originalData) {
-  if (window.compensationFilters) return; // Already initialized
-
-  // Store original data and current filtered data
-  window.compensationFilters = {
-    originalData: originalData,
-    currentData: originalData,
-  };
-
-  // Initialize slider values
-  updateSliderDisplay(
-    "responses-slider",
-    "responses-value",
-    (val) => `${parseInt(val).toLocaleString()}`
-  );
-  updateSliderDisplay("experience-min", "experience-min-value", (val) => val);
-  updateSliderDisplay("experience-max", "experience-max-value", (val) => val);
-  updateSliderDisplay(
-    "comp-min",
-    "comp-min-value",
-    (val) => `$${parseInt(val).toLocaleString()}`
-  );
-  updateSliderDisplay(
-    "comp-max",
-    "comp-max-value",
-    (val) => `$${parseInt(val).toLocaleString()}`
-  );
-
-  // Add event listeners for all filters
-  addFilterEventListeners();
-
-  // Initialize dual range highlight
-  updateDualRangeHighlight();
-}
-
-function updateSliderDisplay(sliderId, displayId, formatter) {
-  const slider = document.getElementById(sliderId);
-  const display = document.getElementById(displayId);
-
-  if (slider && display) {
-    display.textContent = formatter(slider.value);
-
-    // Special handling for dual range sliders
-    if (sliderId === "experience-min" || sliderId === "experience-max") {
-      slider.addEventListener("input", () => {
-        handleDualRangeUpdate(sliderId);
-        display.textContent = formatter(slider.value);
-        applyFilters();
-      });
-    } else {
-      slider.addEventListener("input", () => {
-        display.textContent = formatter(slider.value);
-        applyFilters();
-      });
-    }
-  }
-}
-
-function handleDualRangeUpdate(changedSliderId) {
-  const minSlider = document.getElementById("experience-min");
-  const maxSlider = document.getElementById("experience-max");
-  const minDisplay = document.getElementById("experience-min-value");
-  const maxDisplay = document.getElementById("experience-max-value");
-
-  if (!minSlider || !maxSlider || !minDisplay || !maxDisplay) return;
-
-  const minVal = parseFloat(minSlider.value);
-  const maxVal = parseFloat(maxSlider.value);
-
-  // Ensure min doesn't exceed max
-  if (changedSliderId === "experience-min" && minVal > maxVal) {
-    maxSlider.value = minVal;
-    maxDisplay.textContent = minVal;
-  }
-
-  // Ensure max doesn't go below min
-  if (changedSliderId === "experience-max" && maxVal < minVal) {
-    minSlider.value = maxVal;
-    minDisplay.textContent = maxVal;
-  }
-
-  // Update visual range highlight
-  updateDualRangeHighlight();
-}
-
-function updateDualRangeHighlight() {
-  const minSlider = document.getElementById("experience-min");
-  const maxSlider = document.getElementById("experience-max");
-  const container = document.querySelector(".dual-range-container");
-
-  if (!minSlider || !maxSlider || !container) return;
-
-  const min = parseFloat(minSlider.min);
-  const max = parseFloat(minSlider.max);
-  const minVal = parseFloat(minSlider.value);
-  const maxVal = parseFloat(maxSlider.value);
-
-  const leftPercent = ((minVal - min) / (max - min)) * 100;
-  const rightPercent = ((max - maxVal) / (max - min)) * 100;
-
-  container.style.setProperty("--range-left", leftPercent + "%");
-  container.style.setProperty("--range-right", rightPercent + "%");
-
-  // Update the ::after pseudo-element
-  const style = document.createElement("style");
-  style.textContent = `
-    .dual-range-container::after {
-      left: ${leftPercent}% !important;
-      right: ${rightPercent}% !important;
-    }
-  `;
-
-  // Remove any existing dynamic styles for this
-  const existingStyle = document.getElementById("dual-range-style");
-  if (existingStyle) {
-    existingStyle.remove();
-  }
-
-  style.id = "dual-range-style";
-  document.head.appendChild(style);
-}
-
-function addFilterEventListeners() {
-  // Slider event listeners (experience sliders are handled in updateSliderDisplay)
-  ["responses-slider", "comp-min", "comp-max"].forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener("input", applyFilters);
-    }
-  });
-
-  // Reset button
-  const resetButton = document.getElementById("reset-filters");
-  if (resetButton) {
-    resetButton.addEventListener("click", resetFilters);
-  }
-}
-
-function applyFilters() {
-  if (!window.compensationFilters) return;
-
-  const originalData = window.compensationFilters.originalData;
-
-  // Get filter values
-  const minResponses = parseInt(
-    document.getElementById("responses-slider")?.value || 0
-  );
-  const minExperience = parseFloat(
-    document.getElementById("experience-min")?.value || 0
-  );
-  const maxExperience = parseFloat(
-    document.getElementById("experience-max")?.value || 15
-  );
-  const minComp = parseInt(document.getElementById("comp-min")?.value || 0);
-  const maxComp = parseInt(
-    document.getElementById("comp-max")?.value || 200000
-  );
-
-  // Filter the data
-  const filteredData = originalData.filter((item) => {
-    // Response count filter
-    if (item.responseCount < minResponses) return false;
-
-    // Experience filter
-    if (
-      item.avgExperience < minExperience ||
-      item.avgExperience > maxExperience
-    )
-      return false;
-
-    // Compensation filter
-    if (item.medianCompensation < minComp || item.medianCompensation > maxComp)
-      return false;
-
-    return true;
-  });
-
-  // Update stored filtered data
-  window.compensationFilters.currentData = filteredData;
-
-  // Recreate the chart with filtered data
-  createCompensationChart(originalData, filteredData);
-}
-
-function resetFilters() {
-  // Reset slider values to defaults
-  const sliders = [
-    { id: "responses-slider", value: 5000 },
-    { id: "experience-min", value: 0 },
-    { id: "experience-max", value: 15 },
-    { id: "comp-min", value: 0 },
-    { id: "comp-max", value: 200000 },
-  ];
-
-  sliders.forEach(({ id, value }) => {
-    const slider = document.getElementById(id);
-    if (slider) {
-      slider.value = value;
-    }
-  });
-
-  // Update displays and apply filters
-  if (window.compensationFilters) {
-    updateSliderDisplay(
-      "responses-slider",
-      "responses-value",
-      (val) => `${parseInt(val).toLocaleString()}`
-    );
-    updateSliderDisplay("experience-min", "experience-min-value", (val) => val);
-    updateSliderDisplay("experience-max", "experience-max-value", (val) => val);
-    updateSliderDisplay(
-      "comp-min",
-      "comp-min-value",
-      (val) => `$${parseInt(val).toLocaleString()}`
-    );
-    updateSliderDisplay(
-      "comp-max",
-      "comp-max-value",
-      (val) => `$${parseInt(val).toLocaleString()}`
-    );
-
-    // Update dual range highlight
-    updateDualRangeHighlight();
-
-    applyFilters();
-  }
-}
-
-// End of chart functions

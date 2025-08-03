@@ -105,7 +105,10 @@
 
               <div class="filter-group">
                 <label>Average Years of Professional Coding</label>
-                <div class="dual-range-container">
+                <div
+                  class="dual-range-container"
+                  id="experience-range-container"
+                >
                   <input
                     type="range"
                     id="experience-min"
@@ -133,7 +136,10 @@
 
               <div class="filter-group">
                 <label>Compensation (in $)</label>
-                <div class="range-slider-container">
+                <div
+                  class="dual-range-container"
+                  id="compensation-range-container"
+                >
                   <input
                     type="range"
                     id="comp-min"
@@ -141,6 +147,7 @@
                     max="200000"
                     value="0"
                     step="5000"
+                    class="dual-range-min"
                   />
                   <input
                     type="range"
@@ -149,10 +156,11 @@
                     max="200000"
                     value="200000"
                     step="5000"
+                    class="dual-range-max"
                   />
                   <div class="range-values">
-                    <span id="comp-min-value">$0</span> -
-                    <span id="comp-max-value">$200,000</span>
+                    <span>Min: <span id="comp-min-value">$0</span></span> -
+                    <span>Max: <span id="comp-max-value">$200,000</span></span>
                   </div>
                 </div>
               </div>

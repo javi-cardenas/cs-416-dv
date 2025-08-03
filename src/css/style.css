@@ -591,8 +591,8 @@ svg {
   pointer-events: none;
 }
 
-/* Active range highlight (will be updated by JavaScript) */
-.dual-range-container::after {
+/* Active range highlight for experience (will be updated by JavaScript) */
+#experience-range-container::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -603,6 +603,22 @@ svg {
   z-index: 2;
   left: 0%;
   right: 0%;
+  transition: all 0.1s ease;
+  pointer-events: none;
+}
+
+/* Active range highlight for compensation (will be updated by JavaScript) */
+#compensation-range-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  background: #89b4fa; /* Catppuccin blue */
+  border-radius: 3px;
+  z-index: 2;
+  left: 0%;
+  right: 100%;
   transition: all 0.1s ease;
   pointer-events: none;
 }

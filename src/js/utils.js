@@ -1,3 +1,20 @@
+/**
+ * Creates a customizable bar chart using D3.js
+ * @param {string} containerId - CSS selector for the container element
+ * @param {Array<Object>} data - Array of data objects to visualize
+ * @param {Object} [options={}] - Configuration options for the chart
+ * @param {number} [options.width=800] - Chart width in pixels
+ * @param {number} [options.height=600] - Chart height in pixels
+ * @param {Object} [options.margin] - Chart margins
+ * @param {string} [options.xField="x"] - Property name for x-axis values
+ * @param {string} [options.yField="y"] - Property name for y-axis values
+ * @param {string} [options.color="#89b4fa"] - Default bar color
+ * @param {string} [options.xAxisLabel=""] - Label for x-axis
+ * @param {string} [options.yAxisLabel=""] - Label for y-axis
+ * @param {boolean} [options.rotateXLabels=false] - Whether to rotate x-axis labels
+ * @param {Function} [options.colorFunction] - Function to determine bar colors
+ * @returns {Object} Object containing SVG elements and scales
+ */
 function createBarChart(containerId, data, options = {}) {
   const defaults = {
     width: 800,
@@ -56,7 +73,6 @@ function createBarChart(containerId, data, options = {}) {
   // Y-axis
   g.append("g").call(d3.axisLeft(y));
 
-  // Bars
   g.selectAll(".bar")
     .data(data)
     .enter()
@@ -70,7 +86,7 @@ function createBarChart(containerId, data, options = {}) {
       config.colorFunction ? config.colorFunction(d) : config.color
     );
 
-  // Add percentage labels on bars (if percentage field exists in data)
+  // Add percentage labels on bars
   if (data.length > 0 && data[0].hasOwnProperty("percentage")) {
     g.selectAll(".bar-label")
       .data(data)
@@ -82,7 +98,7 @@ function createBarChart(containerId, data, options = {}) {
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .style("font-weight", "bold")
-      .style("fill", "#cdd6f4") // Catppuccin text
+      .style("fill", "#cdd6f4")
       .text((d) => d.percentage + "%");
   }
 
@@ -109,6 +125,25 @@ function createBarChart(containerId, data, options = {}) {
   return { svg, g, x, y };
 }
 
+/**
+ * Creates a customizable scatter plot with optional sizing and coloring by data fields
+ * @param {string} containerId - CSS selector for the container element
+ * @param {Array<Object>} data - Array of data objects to visualize
+ * @param {Object} [options={}] - Configuration options for the chart
+ * @param {number} [options.width=800] - Chart width in pixels
+ * @param {number} [options.height=600] - Chart height in pixels
+ * @param {Object} [options.margin] - Chart margins
+ * @param {string} [options.xField="x"] - Property name for x-axis values
+ * @param {string} [options.yField="y"] - Property name for y-axis values
+ * @param {string} [options.radiusField=null] - Property name for circle radius sizing
+ * @param {string} [options.colorField=null] - Property name for circle coloring
+ * @param {number} [options.radius=5] - Default circle radius
+ * @param {string} [options.color="#89b4fa"] - Default circle color
+ * @param {string} [options.xAxisLabel=""] - Label for x-axis
+ * @param {string} [options.yAxisLabel=""] - Label for y-axis
+ * @param {boolean} [options.showTooltip=true] - Whether to show tooltips on hover
+ * @returns {Object} Object containing SVG elements, scales, and tooltip
+ */
 function createScatterPlot(containerId, data, options = {}) {
   const defaults = {
     width: 800,
@@ -168,23 +203,22 @@ function createScatterPlot(containerId, data, options = {}) {
     const colorDomain = Array.from(
       new Set(data.map((d) => d[config.colorField]))
     );
-    // Catppuccin color palette
     const catppuccinColors = [
-      "#89b4fa", // blue
-      "#cba6f7", // mauve
-      "#f38ba8", // red
-      "#fab387", // peach
-      "#f9e2af", // yellow
-      "#a6e3a1", // green
-      "#94e2d5", // teal
-      "#89dceb", // sky
-      "#b4befe", // lavender
-      "#f5c2e7", // pink
-      "#cdd6f4", // text
-      "#bac2de", // subtext1
-      "#a6adc8", // subtext0
-      "#9399b2", // overlay2
-      "#7f849c", // overlay1
+      "#89b4fa",
+      "#cba6f7",
+      "#f38ba8",
+      "#fab387",
+      "#f9e2af",
+      "#a6e3a1",
+      "#94e2d5",
+      "#89dceb",
+      "#b4befe",
+      "#f5c2e7",
+      "#cdd6f4",
+      "#bac2de",
+      "#a6adc8",
+      "#9399b2",
+      "#7f849c",
     ];
     colorScale = d3.scaleOrdinal(catppuccinColors).domain(colorDomain);
   }
@@ -206,8 +240,8 @@ function createScatterPlot(containerId, data, options = {}) {
       .attr("class", "tooltip")
       .style("position", "absolute")
       .style("padding", "10px")
-      .style("background", "rgba(24, 24, 37, 0.95)") // Catppuccin mantle
-      .style("color", "#cdd6f4") // Catppuccin text
+      .style("background", "rgba(24, 24, 37, 0.95)")
+      .style("color", "#cdd6f4")
       .style("border-radius", "5px")
       .style("pointer-events", "none")
       .style("opacity", 0);
@@ -247,7 +281,7 @@ function createScatterPlot(containerId, data, options = {}) {
       }
     });
 
-  // Add text labels for programming languages (if colorField exists in data)
+  // Add text labels for programming languages
   if (
     config.colorField &&
     data.length > 0 &&
@@ -272,9 +306,9 @@ function createScatterPlot(containerId, data, options = {}) {
           (radiusScale ? radiusScale(d[config.radiusField]) : config.radius) -
           2
       )
-      .style("font-size", "10px") // Slightly smaller to fit more labels
+      .style("font-size", "10px")
       .style("font-weight", "500")
-      .style("fill", "#cdd6f4") // Catppuccin text
+      .style("fill", "#cdd6f4")
       .style("text-anchor", "start")
       .style("pointer-events", "none") // Prevent interfering with dot interactions
       .style("opacity", 0.9) // Slightly transparent to reduce visual clutter
@@ -304,8 +338,25 @@ function createScatterPlot(containerId, data, options = {}) {
   return { svg, g, x, y, tooltip };
 }
 
-// World map function removed - no longer needed
-
+/**
+ * Creates a stacked bar chart with customizable stack fields and colors
+ * @param {string} containerId - CSS selector for the container element
+ * @param {Array<Object>} data - Array of data objects to visualize
+ * @param {Object} [options={}] - Configuration options for the chart
+ * @param {number} [options.width=900] - Chart width in pixels
+ * @param {number} [options.height=600] - Chart height in pixels
+ * @param {Object} [options.margin] - Chart margins
+ * @param {string} [options.xField="language"] - Property name for x-axis values
+ * @param {Array<string>} [options.stackFields] - Array of property names to stack
+ * @param {Array<string>} [options.stackLabels] - Labels for stack segments
+ * @param {Array<string>} [options.colors] - Colors for each stack segment
+ * @param {string} [options.xAxisLabel=""] - Label for x-axis
+ * @param {string} [options.yAxisLabel=""] - Label for y-axis
+ * @param {boolean} [options.rotateXLabels=true] - Whether to rotate x-axis labels
+ * @param {boolean} [options.showLegend=true] - Whether to show legend
+ * @param {boolean} [options.showPercentageLabels=false] - Whether to show percentage labels
+ * @returns {Object} Object containing SVG elements, scales, and tooltip
+ */
 function createStackedBarChart(containerId, data, options = {}) {
   const defaults = {
     width: 900,
@@ -314,7 +365,7 @@ function createStackedBarChart(containerId, data, options = {}) {
     xField: "language",
     stackFields: ["yes", "planning", "notPlanning"],
     stackLabels: ["Yes", "No, but I plan to", "No, and I don't plan to"],
-    colors: ["#a6e3a1", "#fab387", "#f38ba8"], // Catppuccin green, peach, red
+    colors: ["#a6e3a1", "#fab387", "#f38ba8"],
     xAxisLabel: "",
     yAxisLabel: "",
     rotateXLabels: true,
@@ -380,8 +431,8 @@ function createStackedBarChart(containerId, data, options = {}) {
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("padding", "10px")
-    .style("background", "rgba(24, 24, 37, 0.95)") // Catppuccin mantle
-    .style("color", "#cdd6f4") // Catppuccin text
+    .style("background", "rgba(24, 24, 37, 0.95)")
+    .style("color", "#cdd6f4")
     .style("border-radius", "5px")
     .style("pointer-events", "none")
     .style("opacity", 0);
