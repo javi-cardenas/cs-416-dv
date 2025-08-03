@@ -58,7 +58,7 @@ async function init() {
     });
 
     // Add event listeners for dot navigation
-    const dots = document.querySelectorAll(".dot");
+    const dots = document.querySelectorAll(".nav-dot");
     dots.forEach((dot, index) => {
       dot.addEventListener("click", () => {
         if (index !== currentScene) {
@@ -90,7 +90,7 @@ async function init() {
 
     function updateSceneIndicator(sceneIndex) {
       // Update dot indicators
-      const dots = document.querySelectorAll(".dot");
+      const dots = document.querySelectorAll(".nav-dot");
       dots.forEach((dot, index) => {
         dot.classList.toggle("active", index === sceneIndex);
       });

@@ -196,11 +196,11 @@ function createScatterPlot(containerId, data, options = {}) {
   }
 
   // Circles
-  g.selectAll(".dot")
+  g.selectAll(".chart-dot")
     .data(data)
     .enter()
     .append("circle")
-    .attr("class", "dot")
+    .attr("class", "chart-dot")
     .attr("cx", (d) => x(d[config.xField]))
     .attr("cy", (d) => y(d[config.yField]))
     .attr("r", (d) =>
@@ -235,11 +235,11 @@ function createScatterPlot(containerId, data, options = {}) {
     data.length > 0 &&
     data[0].hasOwnProperty(config.colorField)
   ) {
-    g.selectAll(".dot-label")
+    g.selectAll(".chart-dot-label")
       .data(data)
       .enter()
       .append("text")
-      .attr("class", "dot-label")
+      .attr("class", "chart-dot-label")
       .attr(
         "x",
         (d) =>
