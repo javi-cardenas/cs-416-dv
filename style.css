@@ -371,14 +371,14 @@ svg {
 
 /* Error Message Styling */
 .error-message {
-  background: rgba(243, 139, 168, 0.15);
-  border: 1px solid rgba(243, 139, 168, 0.4);
+  background: rgba(210, 15, 57, 0.15);
+  border: 1px solid rgba(210, 15, 57, 0.4);
   padding: 20px;
   margin: 20px 0;
   border-radius: 8px;
   color: #d20f39;
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(76, 79, 105, 0.1);
 }
 
 .error-message h3 {
@@ -433,7 +433,12 @@ svg {
 
 /* Filters Panel */
 .filters-panel {
-  background: rgba(49, 50, 68, 0.3); /* Catppuccin surface0 with transparency */
+  background: rgba(
+    204,
+    208,
+    218,
+    0.3
+  ); /* Catppuccin latte surface0 with transparency */
   border: 1px solid #bcc0cc; /* Catppuccin surface1 */
   border-radius: 12px;
   padding: 1.5rem;
@@ -490,7 +495,7 @@ svg {
   background: #1e66f5; /* Catppuccin blue */
   cursor: pointer;
   border: 2px solid #eff1f5; /* Catppuccin base */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(76, 79, 105, 0.1);
 }
 
 .slider-container input[type="range"]::-moz-range-thumb,
@@ -501,7 +506,7 @@ svg {
   background: #1e66f5; /* Catppuccin blue */
   cursor: pointer;
   border: 2px solid #eff1f5; /* Catppuccin base */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(76, 79, 105, 0.1);
 }
 
 /* Dual Range Slider Styles */
@@ -536,7 +541,7 @@ svg {
   background: #1e66f5; /* Catppuccin blue - same as other sliders */
   cursor: pointer;
   border: 2px solid #eff1f5; /* Catppuccin base */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(76, 79, 105, 0.1);
   pointer-events: auto;
   position: relative;
   z-index: 10;
@@ -545,7 +550,7 @@ svg {
 
 .dual-range-container input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 3px 8px rgba(137, 180, 250, 0.4);
+  box-shadow: 0 3px 8px rgba(30, 102, 245, 0.4);
 }
 
 .dual-range-container input[type="range"]::-moz-range-thumb {
@@ -555,7 +560,7 @@ svg {
   background: #1e66f5; /* Catppuccin blue - same as other sliders */
   cursor: pointer;
   border: 2px solid #eff1f5; /* Catppuccin base */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(76, 79, 105, 0.1);
   pointer-events: auto;
   position: relative;
   z-index: 10;
@@ -565,7 +570,7 @@ svg {
 
 .dual-range-container input[type="range"]::-moz-range-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 3px 8px rgba(137, 180, 250, 0.4);
+  box-shadow: 0 3px 8px rgba(30, 102, 245, 0.4);
 }
 
 .dual-range-container .dual-range-min {
@@ -681,9 +686,14 @@ svg {
 /* Reset Button */
 .reset-button {
   width: 100%;
-  background: rgba(116, 199, 236, 0.15); /* Catppuccin sky with transparency */
-  color: #04a5e5; /* Catppuccin sky */
-  border: 1px solid rgba(116, 199, 236, 0.3);
+  background: rgba(
+    4,
+    165,
+    229,
+    0.15
+  ); /* Catppuccin latte sky with transparency */
+  color: #04a5e5; /* Catppuccin latte sky */
+  border: 1px solid rgba(4, 165, 229, 0.3);
   padding: 0.8rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -698,8 +708,8 @@ svg {
 }
 
 .reset-button:hover {
-  background: rgba(116, 199, 236, 0.25);
-  border-color: rgba(116, 199, 236, 0.5);
+  background: rgba(4, 165, 229, 0.25);
+  border-color: rgba(4, 165, 229, 0.5);
   transform: translateY(-1px);
 }
 
@@ -717,7 +727,12 @@ svg {
 }
 
 .info-box {
-  background: rgba(49, 50, 68, 0.4); /* Catppuccin surface0 with transparency */
+  background: rgba(
+    204,
+    208,
+    218,
+    0.4
+  ); /* Catppuccin latte surface0 with transparency */
   border: 1px solid #bcc0cc; /* Catppuccin surface1 */
   border-radius: 10px;
   padding: 1.2rem;
